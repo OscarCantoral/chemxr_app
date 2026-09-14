@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.example.ch3mxr.ui.components.ArScreen
 import com.example.ch3mxr.ui.features.main.CourseScreen
 import com.example.ch3mxr.ui.features.main.CreateGroupScreen
 import com.example.ch3mxr.ui.features.main.EditGroupScreen
@@ -15,7 +16,8 @@ import com.example.ch3mxr.ui.features.SessionViewModel
 
 fun NavGraphBuilder.mainGraph(
     navController: NavHostController,
-    viewModel: SessionViewModel
+    viewModel: SessionViewModel,
+    arSupported: Boolean
 ) {
 
     navigation<Graph.Main>(
@@ -37,7 +39,8 @@ fun NavGraphBuilder.mainGraph(
                             inclusive = true
                         }
                     }
-                }
+                },
+                arSupported = arSupported
             )
         }
         composable<Routes.CourseDetail> {
@@ -45,6 +48,15 @@ fun NavGraphBuilder.mainGraph(
                 it.toRoute<Routes.CourseDetail>()
             CourseScreen(
                 course = CourseCatalog.byId(route.courseId),
+                onBack = {
+                    navController.popBackStack()
+                }, onArClick = {
+                    navController.navigate(Routes.ArScreen)
+                }
+            )
+        }
+        composable<Routes.ArScreen> {
+            ArScreen(
                 onBack = {
                     navController.popBackStack()
                 }

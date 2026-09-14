@@ -25,7 +25,8 @@ import com.example.ch3mxr.ui.model.CourseModule
 @Composable
 fun CourseScreen(
     course: Course,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onArClick: () -> Unit
 ) {
 
     val darkBg = Color(0xFF020617)
@@ -254,6 +255,33 @@ fun CourseScreen(
             pdfAsset = course.manualAsset,
             onClose = { isOpened = false }
         )
+
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp)
+                .clickable {
+                    onArClick()
+                },
+            shape = RoundedCornerShape(18.dp),
+            color = Color(0xFF0B1220),
+            border = BorderStroke(
+                1.dp,
+                cyan.copy(alpha = 0.6f)
+            )
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "◉  REALIDAD AUMENTADA",
+                    color = cyan,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
 }
 

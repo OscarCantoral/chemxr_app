@@ -8,6 +8,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.ch3mxr.ui.features.App
 import com.example.ch3mxr.ui.theme.Ch3mxrTheme
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.google.ar.core.ArCoreApk
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

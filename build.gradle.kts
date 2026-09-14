@@ -6,3 +6,12 @@ plugins {
     alias(libs.plugins.dagger.hilt) apply false
     alias(libs.plugins.kotlin.serialization) apply false
 }
+val kotlinVersion = libs.versions.kotlin.get()
+
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            force("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
+        }
+    }
+}

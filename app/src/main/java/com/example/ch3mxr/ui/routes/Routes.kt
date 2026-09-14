@@ -40,6 +40,9 @@ sealed interface Routes {
     data object CreateGroup : Routes
 
     @Serializable
+    data object ArScreen: Routes
+
+    @Serializable
     data class EditGroup(
         val groupName: String
     ) : Routes

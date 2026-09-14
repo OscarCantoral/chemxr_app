@@ -1,10 +1,9 @@
 package com.example.ch3mxr.ui.features.main
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.*
@@ -16,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import com.example.ch3mxr.ui.components.ArCoreBanner
 import com.example.ch3mxr.ui.components.CourseCard
 import com.example.ch3mxr.ui.model.CourseCatalog
 
@@ -24,15 +24,16 @@ fun HomeScreen(
     onCourseClick: (String) -> Unit,
     onLibresClick: () -> Unit,
     onGruposClick: () -> Unit,
-    onLogoutClick: () -> Unit = {}
+    onLogoutClick: () -> Unit = {},
+    arSupported: Boolean
 ) {
-
     val cyanColor = Color(0xFF0ED2F7)
     val darkBg = Color(0xFF020617)
 
     var selectedTab by remember { mutableStateOf("libres") }
 
     val cursos = CourseCatalog.all
+    var showArBanner by remember { mutableStateOf(true) }
 
     Box(
         modifier = Modifier
@@ -66,6 +67,19 @@ fun HomeScreen(
                     )
                 }
             }
+
+
+            AnimatedVisibility(
+                visible = arSupported && showArBanner
+            ) {
+                ArCoreBanner(
+                    onClose = {
+                        showArBanner = false
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Spacer(modifier = Modifier.height(40.dp))
 
