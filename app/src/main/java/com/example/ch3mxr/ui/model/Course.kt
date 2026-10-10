@@ -15,6 +15,7 @@ data class Course(
     val description: String,
     val imageRes: Int,
     val manualAsset: String,
+    val videoUrl: String? = null,
     val modules: List<CourseModule>
 )
 
@@ -27,6 +28,7 @@ object CourseCatalog {
         description = "Átomos, moléculas y enlaces",
         imageRes = R.drawable.fond_curs_quim,
         manualAsset = "manuals/manual_quimica.pdf",
+        videoUrl = "https://www.youtube.com/watch?v=oPrXErLylxA",
         modules = listOf(
             CourseModule("01", "ÁTOMOS", "Estructura\nde la materia"),
             CourseModule("02", "ENLACES", "Iónicos"),

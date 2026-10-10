@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ch3mxr.ui.components.PdfComponent
+import com.example.ch3mxr.ui.components.VideoPlayerComponent
 import com.example.ch3mxr.ui.model.Course
 import com.example.ch3mxr.ui.model.CourseModule
 
@@ -35,7 +36,9 @@ fun CourseScreen(
     val white = Color(0xFFF8FAFC)
 
     val pdfRed = Color(0xFFDC3129)
+    val videoBlue = Color(0xFF1E88E5)
     var isOpened: Boolean by remember { mutableStateOf(false) }
+    var isVideoOpened: Boolean by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -178,6 +181,80 @@ fun CourseScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(82.dp)
+                    .clickable {
+                        if (course.videoUrl != null) {
+                            isVideoOpened = true
+                        }
+                    },
+                shape = RoundedCornerShape(20.dp),
+                color = videoBlue,
+                shadowElevation = 4.dp
+            ) {
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Surface(
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color.White
+                    ) {
+
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+
+                            Text(
+                                text = "VIDEO",
+                                color = videoBlue,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+
+                        Text(
+                            text = "VIDEO",
+                            color = Color.White,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(2.dp))
+
+                        Text(
+                            text = if (course.videoUrl != null) "Contenido audiovisual" else "No disponible",
+                            color = Color.White.copy(alpha = 0.75f),
+                            fontSize = 11.sp
+                        )
+                    }
+
+                    Text(
+                        text = "→",
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
                     .height(70.dp),
                 shape = RoundedCornerShape(18.dp),
                 color = Color(0xFF0B1220),
@@ -255,6 +332,15 @@ fun CourseScreen(
             pdfAsset = course.manualAsset,
             onClose = { isOpened = false }
         )
+
+        course.videoUrl?.let { url ->
+            VideoPlayerComponent(
+                isOpened = isVideoOpened,
+                title = "${course.title} - VIDEO",
+                videoUrl = url,
+                onClose = { isVideoOpened = false }
+            )
+        }
 
         Surface(
             modifier = Modifier
