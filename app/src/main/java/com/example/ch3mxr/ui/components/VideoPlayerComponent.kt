@@ -175,6 +175,8 @@ fun VideoPlayerComponent(
                 }
             }
 
+            val appPackage = context.packageName
+            val extraHeaders = mapOf("Referer" to "https://$appPackage")
             AndroidView(
                 factory = { ctx ->
                     WebView(ctx).apply {
@@ -226,13 +228,13 @@ fun VideoPlayerComponent(
                             }
                         }
 
-                        loadUrl(embedUrl)
+                        loadUrl(embedUrl,extraHeaders)
                         webView = this
                     }
                 },
                 update = { view ->
                     if (view.url != embedUrl) {
-                        view.loadUrl(embedUrl)
+                        view.loadUrl(embedUrl,extraHeaders)
                     }
                 },
                 modifier = Modifier
