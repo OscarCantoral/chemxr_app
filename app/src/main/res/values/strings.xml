@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">ChemXR</string>
-    <string name="facebook_app_id">1658711648571816</string>
-    <string name="fb_login_protocol_scheme">fb1658711648571816</string>
-    <string name="facebook_client_token">0709dd60d6bebd73ffb07c2ab660aa76</string>
 </resources>

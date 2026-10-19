@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style
-        name="Theme.Ch3mxr"
-        parent="Theme.SplashScreen">
-
-        <item name="windowSplashScreenBackground">
-            #0F172A
-        </item>
-
-        <item name="windowSplashScreenAnimatedIcon">
-            @drawable/icon_cxr2
-        </item>
-
-        <item name="postSplashScreenTheme">
-            @style/Theme.Ch3mxr.Main
-        </item>
-
+    <!-- Splash del sistema Android 12+: sin librerias adicionales. -->
+    <style name="Theme.Ch3mxr" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowSplashScreenBackground">@color/chem_splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowBackground">@color/chem_splash_background</item>
+        <item name="android:statusBarColor">@color/chem_splash_background</item>
+        <item name="android:navigationBarColor">@color/chem_splash_background</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
-
-    <style
-        name="Theme.Ch3mxr.Main"
-        parent="android:Theme.Material.Light.NoActionBar"/>
-
+    <style name="Theme.Ch3mxr.Main" parent="Theme.Ch3mxr" />
 </resources>

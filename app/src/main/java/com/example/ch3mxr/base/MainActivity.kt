@@ -1,25 +1,43 @@
 package com.example.ch3mxr.base
 
 import android.os.Bundle
+import android.widget.Toast
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.ch3mxr.ui.features.App
-import com.example.ch3mxr.ui.theme.Ch3mxrTheme
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.google.ar.core.ArCoreApk
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.ui.platform.LocalContext
+import com.example.ch3mxr.core.ui.theme.ChemXRTheme
+import com.example.ch3mxr.core.ui.theme.ThemeMode
+import com.example.ch3mxr.feature.auth.login.LoginScreen
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        // El splash usa Theme.Ch3mxr; despues cambiamos al tema normal.
+        setTheme(com.example.ch3mxr.R.style.Theme_Ch3mxr_Main)
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        // Dibuja el fondo Compose tambien detras de las barras del sistema.
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars = false
+        }
+
         setContent {
-            Ch3mxrTheme {
-                App()
+            // Cambiar a ThemeMode.LIGHT o ThemeMode.SYSTEM para probar otros temas.
+            ChemXRTheme(mode = ThemeMode.DARK) {
+                val context = LocalContext.current
+                val pending = {
+                    Toast.makeText(context, "Función pendiente: prototipo visual", Toast.LENGTH_SHORT).show()
+                }
+
+                LoginScreen(
+                    onLoginClick = { _, _, _ -> pending() },
+                    onForgotPasswordClick = pending,
+                    onRegisterClick = pending,
+                    onGoogleClick = pending,
+                    onFacebookClick = pending
+                )
             }
         }
     }
