@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Nombre del sistema: etiqueta Android y cabecera Compose. -->
     <string name="app_name">ChemXR</string>
+    <!-- Solo colorea este sufijo si coincide con el FINAL del nombre. -->
+    <string name="app_name_accent_suffix">XR</string>
+    <!-- Texto centralizado. Si cambias de lema, edita SOLO esta cadena. -->
+    <string name="app_tagline">EDUCACIÓN DIGITAL PARA UNA NUEVA ERA</string>
 </resources>

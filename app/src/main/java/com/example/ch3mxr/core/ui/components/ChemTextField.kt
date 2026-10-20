@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.ch3mxr.core.ui.theme.ChemDimens
+import androidx.compose.foundation.layout.height
 
 @Composable
 fun ChemTextField(
@@ -39,7 +40,9 @@ fun ChemTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(ChemDimens.InputHeight),
         singleLine = true,
         placeholder = { Text(placeholder) },
         leadingIcon = {

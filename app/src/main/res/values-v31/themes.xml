@@ -3,7 +3,7 @@
     <!-- Splash del sistema Android 12+: sin librerias adicionales. -->
     <style name="Theme.Ch3mxr" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowSplashScreenBackground">@color/chem_splash_background</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/img_splsc</item>
         <item name="android:windowBackground">@color/chem_splash_background</item>
         <item name="android:statusBarColor">@color/chem_splash_background</item>
         <item name="android:navigationBarColor">@color/chem_splash_background</item>
