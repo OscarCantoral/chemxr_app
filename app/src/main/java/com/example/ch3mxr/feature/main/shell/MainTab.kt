@@ -7,12 +7,9 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.MenuBook
 import androidx.compose.ui.graphics.vector.ImageVector
 
-enum class MainTab(
-    val title: String,
-    val icon: ImageVector
-) {
-    HOME("Inicio", Icons.Outlined.Home),
-    COURSES("Mis cursos", Icons.Outlined.MenuBook),
-    COMMUNITY("Comunidad", Icons.Outlined.Groups),
-    AGENDA("Agenda", Icons.Outlined.DateRange)
+enum class MainTab(val title: String, val searchHint: String, val icon: ImageVector) {
+    HOME("Inicio", "¿Qué quieres aprender?", Icons.Outlined.Home),
+    COURSES("Mis cursos", "Buscar en mis cursos", Icons.Outlined.MenuBook),
+    COMMUNITY("Comunidad", "Buscar comunidades", Icons.Outlined.Groups),
+    AGENDA("Agenda", "Buscar actividades", Icons.Outlined.DateRange)
 }

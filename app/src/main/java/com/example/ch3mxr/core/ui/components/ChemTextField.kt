@@ -1,7 +1,7 @@
 package com.example.ch3mxr.core.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.example.ch3mxr.core.ui.theme.ChemShapes
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -66,7 +66,7 @@ fun ChemTextField(
         keyboardOptions = KeyboardOptions(
             keyboardType = if (isPassword) KeyboardType.Password else keyboardType
         ),
-        shape = RoundedCornerShape(ChemDimens.ControlRadius),
+        shape = ChemShapes.Component,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.outline,

@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.ch3mxr.R
+import com.example.ch3mxr.core.ui.components.ChemTextAction
 import com.example.ch3mxr.core.ui.components.ChemButton
 import com.example.ch3mxr.core.ui.components.ChemBrand
 import com.example.ch3mxr.core.ui.components.ChemSocialButton
@@ -95,9 +96,7 @@ fun LoginScreen(
             )
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onForgotPasswordClick) {
-                    Text("¿Olvidaste tu contraseña?", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
+                ChemTextAction(text = "¿Olvidaste tu contraseña?", onClick = onForgotPasswordClick)
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -129,9 +128,7 @@ fun LoginScreen(
                 ChemSocialButton(label = "Facebook", iconRes = R.drawable.ic_facebook, onClick = onFacebookClick)
             }
             Spacer(Modifier.height(12.dp))
-            TextButton(onClick = onRegisterClick) {
-                Text("¿No tienes cuenta? Regístrate", color = MaterialTheme.colorScheme.primary)
-            }
+            ChemTextAction(text = "¿No tienes cuenta? Regístrate", onClick = onRegisterClick)
         }
     }
 }

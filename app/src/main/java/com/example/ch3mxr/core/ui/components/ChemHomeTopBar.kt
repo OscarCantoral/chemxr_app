@@ -1,135 +1,79 @@
 package com.example.ch3mxr.core.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.ch3mxr.core.ui.theme.ChemDimens
+import com.example.ch3mxr.core.ui.theme.ChemShapes
 
 @Composable
 fun ChemHomeTopBar(
-    searchPlaceholder: String = "¿Qué quieres aprender?",
+    searchPlaceholder: String,
     onProfileClick: () -> Unit = {},
     onSearchClick: () -> Unit = {},
     onAiClick: () -> Unit = {},
-    onNotificationsClick: () -> Unit = {}
+    onNotificationsClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Surface(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .clickable { onProfileClick() },
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceVariant
+    val c = MaterialTheme.colorScheme
+    Column(Modifier.fillMaxWidth().background(c.background).statusBarsPadding()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().height(ChemDimens.TopBarHeight)
+                .padding(horizontal = ChemDimens.TopBarHorizontalPadding),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(7.dp)
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Outlined.Person,
-                    contentDescription = "Perfil",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-        Surface(
-            modifier = Modifier
-                .weight(1f)
-                .height(44.dp)
-                .clickable { onSearchClick() },
-            shape = RoundedCornerShape(12.dp),
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 0.dp,
-            shadowElevation = 0.dp,
-            border = androidx.compose.foundation.BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
-            )
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Surface(
+                modifier = Modifier.size(ChemDimens.TopBarAvatarSize).clickable(onClick = onProfileClick),
+                color = c.surface, shape = ChemShapes.Component,
+                border = BorderStroke(1.dp, c.outline.copy(alpha = .35f))
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = "Buscar",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Text(
-                    text = searchPlaceholder,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(Icons.Outlined.Person, "Perfil", tint = c.primary,
+                        modifier = Modifier.size(23.dp))
+                }
             }
-        }
-
-        Surface(
-            modifier = Modifier
-                .height(36.dp)
-                .clickable { onAiClick() },
-            shape = RoundedCornerShape(18.dp),
-            color = MaterialTheme.colorScheme.background,
-            border = androidx.compose.foundation.BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Box(
-                modifier = Modifier.padding(horizontal = 10.dp),
-                contentAlignment = Alignment.Center
+            Surface(
+                modifier = Modifier.weight(1f).height(ChemDimens.TopBarSearchHeight)
+                    .clickable(onClick = onSearchClick),
+                shape = ChemShapes.Component, color = c.surface,
+                border = BorderStroke(1.dp, c.outline.copy(alpha = .32f))
             ) {
-                Text(
-                    text = "IA",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(modifier = Modifier.padding(horizontal = 7.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Icon(Icons.Outlined.Search, null, modifier = Modifier.size(17.dp),
+                        tint = c.onSurfaceVariant)
+                    Text(searchPlaceholder, style = MaterialTheme.typography.labelSmall,
+                        color = c.onSurfaceVariant, maxLines = 1,
+                        overflow = TextOverflow.Ellipsis)
+                }
+            }
+            ChemButton(
+                text = "IA", onClick = onAiClick,
+                modifier = Modifier.width(34.dp),
+                style = ChemButtonStyle.OUTLINED,
+                height = ChemDimens.TopBarActionSize
+            )
+            Box(modifier = Modifier.size(ChemDimens.TopBarActionSize)
+                .clickable(onClick = onNotificationsClick), contentAlignment = Alignment.Center) {
+                Icon(Icons.Outlined.Notifications, "Notificaciones", tint = c.onBackground,
+                    modifier = Modifier.size(23.dp))
+                Box(Modifier.align(Alignment.TopEnd).size(5.dp).background(c.primary, ChemShapes.Component))
             }
         }
-
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clickable { onNotificationsClick() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = "Notificaciones",
-                tint = MaterialTheme.colorScheme.onBackground
-            )
-        }
+        HorizontalDivider(color = c.outline.copy(alpha = .30f), thickness = 1.dp)
     }
 }
