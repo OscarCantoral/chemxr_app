@@ -1,5 +1,7 @@
 package com.example.ch3mxr.feature.main.home
 
+import com.example.ch3mxr.core.ui.theme.ChemPalette
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -38,7 +40,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         FeaturedCourseCard()
         DemoPanel {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                IconTile(Icons.Outlined.AutoAwesome, Color(0xFF293D33), accent, 46)
+                IconTile(Icons.Outlined.AutoAwesome, ChemPalette.TutorTileBackground, accent, 46)
                 Column(Modifier.weight(1f)) {
                     Text("Una buena pregunta lo cambia todo.", fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodySmall)
@@ -82,7 +84,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         }
         SectionHeading("Descubre tu área", "Ver más")
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            IconTile(Icons.Outlined.Public, Color(0xFF244053), Color(0xFF9CDAE6), 78)
+            IconTile(Icons.Outlined.Public, ChemPalette.OceanTileBackground, ChemPalette.OceanTileForeground, 78)
             Column(Modifier.weight(1f)) {
                 Eyebrow("Ingeniería · 4 min")
                 Spacer(Modifier.height(5.dp))
@@ -114,7 +116,7 @@ private fun FeaturedCourseCard() {
     val lime = MaterialTheme.colorScheme.primary
     Surface(
         modifier = Modifier.fillMaxWidth().height(248.dp),
-        color = Color(0xFF20372F), shape = ChemShapes.Component,
+        color = ChemPalette.FeaturedCourseBackground, shape = ChemShapes.Component,
         border = BorderStroke(1.dp, lime.copy(alpha = .18f))
     ) {
         Box(Modifier.fillMaxSize()) {
@@ -133,9 +135,9 @@ private fun FeaturedCourseCard() {
                 }
                 Text("Química\nbásica", color = Color.White, fontSize = 27.sp,
                     fontWeight = FontWeight.Bold, lineHeight = 28.sp)
-                Text("Conceptos fundamentales", color = Color(0xFFD4E2DA), style = MaterialTheme.typography.labelMedium)
+                Text("Conceptos fundamentales", color = ChemPalette.FeaturedText, style = MaterialTheme.typography.labelMedium)
                 ProgressStrip(.40f, modifier = Modifier.width(140.dp))
-                Text("40 % completado", color = Color(0xFFCAD9D1), style = MaterialTheme.typography.labelSmall)
+                Text("40 % completado", color = ChemPalette.FeaturedTextMuted, style = MaterialTheme.typography.labelSmall)
                 Spacer(Modifier.weight(1f))
                 ChemButton(
                     text = "Continuar",

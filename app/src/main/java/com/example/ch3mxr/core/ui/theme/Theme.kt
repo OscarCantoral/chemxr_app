@@ -36,8 +36,8 @@ fun ChemXRTheme(
             onBackground = Color.White,
             surface = ChemDarkSurface,
             onSurface = Color.White,
-            onSurfaceVariant = Color(0xFFA4ADB8),
-            outline = Color(0xFF6B7C89)
+            onSurfaceVariant = ChemPalette.DarkMuted,
+            outline = ChemPalette.DarkOutline
         )
     } else {
         lightColorScheme(
@@ -47,8 +47,8 @@ fun ChemXRTheme(
             onBackground = ChemDarkBackground,
             surface = ChemLightSurface,
             onSurface = ChemDarkBackground,
-            onSurfaceVariant = Color(0xFF637282),
-            outline = Color(0xFF697785)
+            onSurfaceVariant = ChemPalette.LightMuted,
+            outline = ChemPalette.LightOutline
         )
     }
 

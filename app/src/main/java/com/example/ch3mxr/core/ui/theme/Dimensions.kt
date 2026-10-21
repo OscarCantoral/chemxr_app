@@ -21,8 +21,14 @@ object ChemDimens {
     val TopBarSearchHeight = 32.dp
     val TopBarAvatarSize = 32.dp
     val TopBarActionSize = 30.dp
+    val TopBarAiLogoSize = 28.dp  // Tamaño visual del logo de IA, independiente del área táctil
     val TopBarHorizontalPadding = 12.dp
     val BottomBarHeight = 58.dp
+    val DetailTopBarHeight = 54.dp
+    val ProfileAvatarSize = 78.dp
+    val MenuRowMinHeight = 60.dp
+    val SearchInputHeight = 48.dp
+    val TutorInputHeight = 52.dp
 
     val LogoSize = 180.dp
     val BrandNameFontSize = 38.sp

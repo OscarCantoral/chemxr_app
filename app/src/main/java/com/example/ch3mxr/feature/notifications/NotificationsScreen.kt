@@ -1,5 +1,7 @@
 package com.example.ch3mxr.feature.notifications
 
+import com.example.ch3mxr.core.ui.theme.ChemPalette
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -89,7 +91,7 @@ private fun NotificationPreview(title: String, message: String, isNew: Boolean, 
             Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 IconTile(
                     icon = if (isScience) Icons.Outlined.Science else Icons.Outlined.ChatBubbleOutline,
-                    background = Color(0xFF2A4035), foreground = c.primary, size = 52
+                    background = ChemPalette.NotificationTileBackground, foreground = c.primary, size = 52
                 )
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(7.dp)) {
                     Text(title, fontWeight = FontWeight.Bold, color = c.onSurface,

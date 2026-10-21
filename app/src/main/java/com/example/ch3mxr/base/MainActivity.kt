@@ -5,14 +5,13 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.ch3mxr.R
+import com.example.ch3mxr.core.ui.theme.ChemAccent
 import com.example.ch3mxr.core.ui.theme.ChemXRTheme
 import com.example.ch3mxr.core.ui.theme.ThemeMode
 import com.example.ch3mxr.feature.auth.login.LoginScreen
@@ -27,28 +26,41 @@ class MainActivity : ComponentActivity() {
             isAppearanceLightStatusBars = false
             isAppearanceLightNavigationBars = false
         }
-
         setContent {
-            ChemXRTheme(mode = ThemeMode.DARK) {
-                // SOLO navegación simulada, sin validar credenciales ni crear sesión.
-                var showMain by rememberSaveable { mutableStateOf(false) }
-                val context = LocalContext.current
-                val pending = {
-                    Toast.makeText(context, "Disponible en una etapa posterior", Toast.LENGTH_SHORT).show()
+            var showMain by rememberSaveable { mutableStateOf(false) }
+            var themeMode by rememberSaveable { mutableStateOf(ThemeMode.DARK) }
+            var accent by rememberSaveable { mutableStateOf(ChemAccent.LIME) }
+            val context = LocalContext.current
+            val comingSoon: () -> Unit = {
+                Toast.makeText(context, "Disponible más adelante", Toast.LENGTH_SHORT).show()
+            }
+            val isLight = when(themeMode) {
+                ThemeMode.LIGHT -> true
+                ThemeMode.DARK -> false
+                ThemeMode.SYSTEM -> !androidx.compose.foundation.isSystemInDarkTheme()
+            }
+            SideEffect {
+                WindowInsetsControllerCompat(window, window.decorView).apply {
+                    isAppearanceLightStatusBars = isLight
+                    isAppearanceLightNavigationBars = isLight
                 }
-
-                // Para la previsualización, volver desde los tabs lleva al login.
+            }
+            ChemXRTheme(mode = themeMode, accentColor = accent.color) {
                 BackHandler(enabled = showMain) { showMain = false }
-
                 if (showMain) {
-                    MainShellScreen()
+                    MainShellScreen(
+                        themeMode = themeMode, accent = accent,
+                        onThemeChange = { themeMode = it },
+                        onAccentChange = { accent = it },
+                        onLogout = { showMain = false }
+                    )
                 } else {
                     LoginScreen(
                         onLoginClick = { _, _, _ -> showMain = true },
-                        onForgotPasswordClick = pending,
-                        onRegisterClick = pending,
-                        onGoogleClick = pending,
-                        onFacebookClick = pending
+                        onForgotPasswordClick = comingSoon,
+                        onRegisterClick = comingSoon,
+                        onGoogleClick = comingSoon,
+                        onFacebookClick = comingSoon
                     )
                 }
             }

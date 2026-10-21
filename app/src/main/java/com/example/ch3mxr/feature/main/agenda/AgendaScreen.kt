@@ -1,5 +1,7 @@
 package com.example.ch3mxr.feature.main.agenda
 
+import com.example.ch3mxr.core.ui.theme.ChemPalette
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -74,7 +76,7 @@ fun AgendaScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(top = 8.dp))
                 Column(modifier = Modifier.weight(1f).padding(start = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Surface(color = Color(0xFF2C4030), shape = ChemShapes.Component) {
+                    Surface(color = ChemPalette.AgendaChipBackground, shape = ChemShapes.Component) {
                         Text("Plan personal", modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
                             fontSize = 10.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                     }
@@ -92,7 +94,7 @@ fun AgendaScreen(modifier: Modifier = Modifier) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .25f))
         DemoPanel {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                IconTile(Icons.Outlined.TrendingUp, Color(0xFF2A4035), MaterialTheme.colorScheme.primary, 45)
+                IconTile(Icons.Outlined.TrendingUp, ChemPalette.NotificationTileBackground, MaterialTheme.colorScheme.primary, 45)
                 Column {
                     Eyebrow("Mi objetivo semanal")
                     Spacer(Modifier.height(7.dp))

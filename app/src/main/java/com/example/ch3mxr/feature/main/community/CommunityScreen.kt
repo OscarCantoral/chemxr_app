@@ -1,5 +1,7 @@
 package com.example.ch3mxr.feature.main.community
 
+import com.example.ch3mxr.core.ui.theme.ChemPalette
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -44,9 +46,9 @@ fun CommunityScreen(modifier: Modifier = Modifier) {
         SectionHeading("Conversaciones que inspiran")
         DemoPanel {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(35.dp).background(Color(0xFFD3B2DB), ChemShapes.Component),
+                Box(modifier = Modifier.size(35.dp).background(ChemPalette.MusicHighlight, ChemShapes.Component),
                     contentAlignment = Alignment.Center) {
-                    Text("LT", fontSize = 11.sp, color = Color(0xFF46244F))
+                    Text("LT", fontSize = 11.sp, color = ChemPalette.MusicAlternateBackground)
                 }
                 Spacer(Modifier.width(11.dp))
                 Column(Modifier.weight(1f)) {
@@ -62,7 +64,7 @@ fun CommunityScreen(modifier: Modifier = Modifier) {
                 color = MaterialTheme.colorScheme.onSurface, fontSize = 14.sp, lineHeight = 21.sp)
             Spacer(Modifier.height(14.dp))
             Box(modifier = Modifier.fillMaxWidth().height(130.dp)
-                .background(Color(0xFF2C493B), ChemShapes.Component),
+                .background(ChemPalette.CommunityTileBackground, ChemShapes.Component),
                 contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(Icons.Outlined.Code, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(44.dp))
@@ -80,7 +82,7 @@ private fun CommunityTile(title: String, subtitle: String, footer: String, scien
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(13.dp)) {
             IconTile(
                 icon = if (science) Icons.Outlined.Public else Icons.Outlined.Code,
-                background = Color(0xFF293E35),
+                background = ChemPalette.ScienceAlternateBackground,
                 foreground = MaterialTheme.colorScheme.primary,
                 size = 60
             )
