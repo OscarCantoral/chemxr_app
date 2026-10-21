@@ -24,26 +24,43 @@ import com.example.ch3mxr.feature.main.components.*
 @Composable
 fun CommunityScreen(modifier: Modifier = Modifier) {
     var groupFilter by rememberSaveable { mutableStateOf("Descubrir") }
-    MainPage(modifier) {
+    MainLazyPage(modifier) {
+        item {
         Eyebrow("Mi espacio · Aprender juntos")
+        }
+        item {
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Heading("Las ideas crecen", 26)
             Text("cuando se comparten.", fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.primary, fontSize = 25.sp, lineHeight = 29.sp)
         }
+        }
+        item {
         SectionHeading("Tus comunidades", "Crear comunidad")
+        }
+        item {
         Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
             DemoFilterButton("Descubrir", groupFilter == "Descubrir", Modifier.weight(1f)) { groupFilter = "Descubrir" }
             DemoFilterButton("Mis comunidades", groupFilter == "Mis comunidades", Modifier.weight(1f)) { groupFilter = "Mis comunidades" }
         }
+        }
+        item {
         if (groupFilter == "Descubrir" || groupFilter == "Mis comunidades") {
             CommunityTile("Curiosos por la ciencia", "Preguntar es el primer paso", "342 miembros · Eres miembro", science = true)
         }
+        }
+        item {
         if (groupFilter == "Descubrir") {
             CommunityTile("Programamos juntos", "Ideas que se convierten en proyectos", "186 miembros", science = false)
         }
+        }
+        item {
         Spacer(Modifier.height(8.dp))
+        }
+        item {
         SectionHeading("Conversaciones que inspiran")
+        }
+        item {
         DemoPanel {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(modifier = Modifier.size(35.dp).background(ChemPalette.MusicHighlight, ChemShapes.Component),
@@ -72,6 +89,7 @@ fun CommunityScreen(modifier: Modifier = Modifier) {
                         fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }
+        }
         }
     }
 }

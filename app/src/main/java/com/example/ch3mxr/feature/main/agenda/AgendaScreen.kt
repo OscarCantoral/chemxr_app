@@ -25,14 +25,21 @@ import com.example.ch3mxr.feature.main.components.*
 fun AgendaScreen(modifier: Modifier = Modifier) {
     var day by rememberSaveable { mutableStateOf(19) }
     var category by rememberSaveable { mutableStateOf("Todo") }
-    MainPage(modifier) {
+    MainLazyPage(modifier) {
+        item {
         Eyebrow("Mi espacio · A tu ritmo")
+        }
+        item {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             Heading("Tu agenda.", 28)
             Icon(Icons.Outlined.CalendarToday, null, tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(25.dp))
         }
+        }
+        item {
         Text("Octubre de 2026", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
+        }
+        item {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             listOf("Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do").forEachIndexed { index, name ->
                 val selected = (19+index) == day
@@ -52,7 +59,11 @@ fun AgendaScreen(modifier: Modifier = Modifier) {
                 }
             }
         }
+        }
+        item {
         Text("Ir a otra fecha", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        item {
         DemoPanel {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("${day.toString().padStart(2, '0')}/10/2026", modifier = Modifier.weight(1f),
@@ -60,6 +71,8 @@ fun AgendaScreen(modifier: Modifier = Modifier) {
                 Icon(Icons.Outlined.CalendarToday, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(18.dp))
             }
         }
+        }
+        item {
         Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 listOf("Todo", "Clase", "Entrega").forEach { item ->
@@ -68,8 +81,14 @@ fun AgendaScreen(modifier: Modifier = Modifier) {
             }
             DemoFilterButton("Plan personal", category == "Plan personal", Modifier.fillMaxWidth()) { category = "Plan personal" }
         }
+        }
+        item {
         Spacer(Modifier.height(9.dp))
+        }
+        item {
         SectionHeading("Tu día, paso a paso", "Planificar estudio")
+        }
+        item {
         if (day == 19 && (category == "Todo" || category == "Plan personal")) {
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text("18:00", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp,
@@ -91,7 +110,11 @@ fun AgendaScreen(modifier: Modifier = Modifier) {
             Text("No hay actividades de ejemplo para este filtro.",
                 color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
         }
+        }
+        item {
         HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .25f))
+        }
+        item {
         DemoPanel {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 IconTile(Icons.Outlined.TrendingUp, ChemPalette.NotificationTileBackground, MaterialTheme.colorScheme.primary, 45)
@@ -107,6 +130,7 @@ fun AgendaScreen(modifier: Modifier = Modifier) {
                         color = MaterialTheme.colorScheme.primary)
                 }
             }
+        }
         }
     }
 }

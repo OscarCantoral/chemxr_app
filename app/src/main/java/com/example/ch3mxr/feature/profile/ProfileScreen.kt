@@ -14,10 +14,12 @@ import com.example.ch3mxr.core.ui.components.*
 import com.example.ch3mxr.core.ui.theme.ChemDimens
 import com.example.ch3mxr.feature.main.components.Eyebrow
 import com.example.ch3mxr.feature.main.components.MainPage
+import com.example.ch3mxr.feature.profile.model.StudySpace
 
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
+    activeSpace: StudySpace,
     onSettings: () -> Unit,
     onLogout: () -> Unit,
     onMockAction: (String) -> Unit
@@ -44,10 +46,10 @@ fun ProfileScreen(
             ChemButton("Ver perfil público", { onMockAction("Ver perfil público") },
                 modifier = Modifier.weight(1f), style = ChemButtonStyle.OUTLINED)
         }
-        Eyebrow("Mi aprendizaje")
+        Eyebrow("Mi aprendizaje · ${activeSpace.name}")
         ChemMenuGroup {
-            ChemMenuRow(Icons.Outlined.EmojiEvents, "Certificados y logros",
-                "Tu camino deja huella", { onMockAction("Certificados y logros") })
+            ChemMenuRow(Icons.Outlined.EmojiEvents, "Logros",
+                "Tu camino deja huella", { onMockAction("Logros") })
             ChemMenuRow(Icons.Outlined.Forum, "Mis consultas",
                 "Conversaciones con tus docentes", { onMockAction("Mis consultas") }, showDivider = false)
         }

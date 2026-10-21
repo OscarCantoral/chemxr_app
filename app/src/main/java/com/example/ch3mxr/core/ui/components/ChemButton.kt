@@ -1,21 +1,20 @@
 package com.example.ch3mxr.core.ui.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -24,7 +23,7 @@ import com.example.ch3mxr.core.ui.theme.ChemShapes
 
 enum class ChemButtonStyle { FILLED, OUTLINED, MUTED }
 
-/** Botón común para Login, Curso destacado, filtros y futuras pantallas. */
+/** Botón visual compartido; sin ripple ni transición de colores. */
 @Composable
 fun ChemButton(
     text: String,
@@ -36,29 +35,45 @@ fun ChemButton(
     leadingIcon: ImageVector? = null
 ) {
     val colors = MaterialTheme.colorScheme
-    val bg = when (style) {
+    val background = when (style) {
         ChemButtonStyle.FILLED -> colors.primary
         ChemButtonStyle.OUTLINED -> Color.Transparent
         ChemButtonStyle.MUTED -> colors.surface
     }
-    val fg = when (style) {
+    val foreground = when (style) {
         ChemButtonStyle.FILLED -> colors.onPrimary
         ChemButtonStyle.OUTLINED -> colors.onSurfaceVariant
         ChemButtonStyle.MUTED -> colors.onSurface
     }
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(height),
-        enabled = enabled,
-        shape = ChemShapes.Component,
-        border = if (style == ChemButtonStyle.OUTLINED) BorderStroke(1.dp, colors.outline.copy(alpha = .45f)) else null,
-        colors = ButtonDefaults.buttonColors(containerColor = bg, contentColor = fg),
-        contentPadding = PaddingValues(horizontal = 9.dp)
+    val interaction = remember { MutableInteractionSource() }
+    val borderModifier = if (style == ChemButtonStyle.OUTLINED) {
+        Modifier.border(1.dp, colors.outline.copy(alpha = 0.45f), ChemShapes.Component)
+    } else Modifier
+
+    Box(
+        modifier = modifier
+            .height(height)
+            .background(if (enabled) background else background.copy(alpha = 0.45f), ChemShapes.Component)
+            .then(borderModifier)
+            .clickable(
+                interactionSource = interaction,
+                indication = null,
+                enabled = enabled,
+                role = Role.Button,
+                onClick = onClick
+            )
+            .padding(horizontal = 9.dp),
+        contentAlignment = Alignment.Center
     ) {
-        if (leadingIcon != null) {
-            Icon(leadingIcon, contentDescription = null, modifier = Modifier.size(17.dp))
-            Spacer(Modifier.width(6.dp))
+        Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+            if (leadingIcon != null) {
+                Icon(leadingIcon, contentDescription = null,
+                    modifier = Modifier.size(17.dp), tint = foreground)
+                Spacer(Modifier.width(6.dp))
+            }
+            Text(text = text, color = foreground.copy(alpha = if (enabled) 1f else .45f),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold, maxLines = 1)
         }
-        Text(text, fontWeight = FontWeight.SemiBold, maxLines = 1)
     }
 }

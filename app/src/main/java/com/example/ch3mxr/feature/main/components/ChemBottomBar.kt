@@ -2,6 +2,9 @@ package com.example.ch3mxr.feature.main.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -21,8 +24,14 @@ fun ChemBottomBar(selectedTab: MainTab, onTabSelected: (MainTab) -> Unit) {
             MainTab.entries.forEach { tab ->
                 val selected = selectedTab == tab
                 val tint = if (selected) colors.primary else colors.onSurfaceVariant
+                val interaction = remember(tab) { MutableInteractionSource() }
                 Column(
-                    modifier = Modifier.weight(1f).fillMaxHeight().clickable { onTabSelected(tab) },
+                    modifier = Modifier.weight(1f).fillMaxHeight().clickable(
+                        interactionSource = interaction,
+                        indication = null,
+                        role = Role.Tab,
+                        onClick = { if (!selected) onTabSelected(tab) }
+                    ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {

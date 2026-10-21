@@ -1,6 +1,5 @@
 package com.example.ch3mxr.feature.tutor
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,17 +12,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
-import com.example.ch3mxr.R
 import com.example.ch3mxr.core.ui.components.ChemButton
 import com.example.ch3mxr.core.ui.components.ChemIconAction
+import com.example.ch3mxr.core.ui.components.ChemAiLogo
 import com.example.ch3mxr.core.ui.components.ChemButtonStyle
 import com.example.ch3mxr.core.ui.theme.ChemDimens
 import com.example.ch3mxr.core.ui.theme.ChemShapes
-import com.example.ch3mxr.core.ui.theme.LocalChemIsDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,7 +28,6 @@ fun TutorAiSheet(contextLabel: String, onDismiss: () -> Unit) {
     var question by rememberSaveable { mutableStateOf("") }
     var lastQuestion by rememberSaveable { mutableStateOf("") }
     val c = MaterialTheme.colorScheme
-    val image = if (LocalChemIsDark.current) R.drawable.logoia else R.drawable.logoia_2
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         shape = ChemShapes.Component,
@@ -44,8 +39,7 @@ fun TutorAiSheet(contextLabel: String, onDismiss: () -> Unit) {
             .padding(horizontal = 17.dp, vertical = 14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Image(painterResource(image), contentDescription = "Tutor IA",
-                    modifier = Modifier.size(38.dp), contentScale = ContentScale.Fit)
+                ChemAiLogo(modifier = Modifier.size(38.dp))
                 Column(Modifier.weight(1f)) {
                     Text("Tutor IA", style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold, color = c.onBackground)

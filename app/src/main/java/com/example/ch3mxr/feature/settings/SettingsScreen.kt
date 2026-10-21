@@ -28,9 +28,7 @@ fun SettingsScreen(
     onMockAction: (String) -> Unit
 ) {
     var largeText by rememberSaveable { mutableStateOf(false) }
-    var reduceMotion by rememberSaveable { mutableStateOf(false) }
     var notifications by rememberSaveable { mutableStateOf(true) }
-    var aiBottom by rememberSaveable { mutableStateOf(true) }
 
     MainPage(modifier) {
         Eyebrow("A tu manera")
@@ -48,7 +46,7 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.labelMedium)
             Spacer(Modifier.height(9.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                listOf(ThemeMode.SYSTEM to "Sistema", ThemeMode.LIGHT to "Claro", ThemeMode.DARK to "Oscuro")
+                listOf(ThemeMode.LIGHT to "Claro", ThemeMode.DARK to "Oscuro")
                     .forEach { (value, text) ->
                         ChemButton(text, { onThemeChange(value) }, Modifier.weight(1f),
                             style = if (themeMode == value) ChemButtonStyle.FILLED else ChemButtonStyle.OUTLINED,
@@ -69,23 +67,7 @@ fun SettingsScreen(
             Spacer(Modifier.height(19.dp))
             ChemDemoToggleRow("Texto más grande", "Mejora la lectura", largeText) { largeText = it }
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .22f))
-            ChemDemoToggleRow("Reducir movimiento", "", reduceMotion) { reduceMotion = it }
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .22f))
-            Spacer(Modifier.height(13.dp))
-            Text("Abrir Tutor IA como", style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ChemButton("Panel inferior", { aiBottom = true }, Modifier.weight(1f),
-                    style = if (aiBottom) ChemButtonStyle.FILLED else ChemButtonStyle.OUTLINED,
-                    height = ChemDimens.FilterHeight)
-                ChemButton("Pantalla", { aiBottom = false }, Modifier.weight(1f),
-                    style = if (!aiBottom) ChemButtonStyle.FILLED else ChemButtonStyle.OUTLINED,
-                    height = ChemDimens.FilterHeight)
-            }
-            Spacer(Modifier.height(15.dp))
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .22f))
-            ChemDemoToggleRow("Recordatorios en la app", "", notifications) { notifications = it }
+            ChemDemoToggleRow("Activar notificaciones", "Notificaciones del aplicativo (simulado)", notifications) { notifications = it }
         }
         ChemMenuGroup {
             ChemMenuRow(Icons.Outlined.Forum, "Chat y comunicación", onClick = { onMockAction("Chat") })

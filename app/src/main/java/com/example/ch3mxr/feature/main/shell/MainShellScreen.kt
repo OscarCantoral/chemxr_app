@@ -1,6 +1,7 @@
 package com.example.ch3mxr.feature.main.shell
 
 import android.widget.Toast
+import androidx.compose.ui.draw.drawWithContent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -23,9 +24,15 @@ import com.example.ch3mxr.feature.main.agenda.AgendaScreen
 import com.example.ch3mxr.feature.notifications.NotificationsScreen
 import com.example.ch3mxr.feature.notifications.NotificationsTopBar
 import com.example.ch3mxr.feature.profile.ProfileScreen
+import com.example.ch3mxr.feature.profile.StudySpacePickerDialog
+import com.example.ch3mxr.feature.profile.model.DemoStudySpaces
 import com.example.ch3mxr.feature.settings.SettingsScreen
 import com.example.ch3mxr.feature.search.SearchScreen
 import com.example.ch3mxr.feature.tutor.TutorAiSheet
+
+// Sólo diagnóstico: cambia a true para mostrar las cuatro pestañas sin su contenido.
+// Si así el cambio se vuelve instantáneo, el costo está en las pantallas.
+private const val TEST_EMPTY_TABS = false
 
 private enum class MainDestination { TABS, PROFILE, SETTINGS, SEARCH, NOTIFICATIONS }
 
@@ -40,7 +47,12 @@ fun MainShellScreen(
     var selectedTab by rememberSaveable { mutableStateOf(MainTab.HOME) }
     var destination by rememberSaveable { mutableStateOf(MainDestination.TABS) }
     var tutorVisible by rememberSaveable { mutableStateOf(false) }
+    var spacePickerVisible by rememberSaveable { mutableStateOf(false) }
+    var selectedSpaceId by rememberSaveable { mutableStateOf("personal") }
+    val studySpaces = DemoStudySpaces.available
+    val currentSpace = studySpaces.firstOrNull { it.id == selectedSpaceId } ?: studySpaces.first()
     val holder = rememberSaveableStateHolder()
+    val tabMeter = remember { TabSwitchMeter() }
     val context = LocalContext.current
     val demoAction: (String) -> Unit = { title ->
         Toast.makeText(context, "$title: disponible próximamente", Toast.LENGTH_SHORT).show()
@@ -62,9 +74,10 @@ fun MainShellScreen(
                     onAiClick = { tutorVisible = true },
                     onNotificationsClick = { destination = MainDestination.NOTIFICATIONS }
                 )
-                MainDestination.PROFILE -> ChemDetailTopBar("Mi espacio", goBack,
+                MainDestination.PROFILE -> ChemDetailTopBar(currentSpace.name, goBack,
                     actionIcon = Icons.Outlined.Settings, actionDescription = "Configuración",
-                    onAction = { destination = MainDestination.SETTINGS })
+                    onAction = { destination = MainDestination.SETTINGS },
+                    onTitleClick = { spacePickerVisible = true })
                 MainDestination.SETTINGS -> ChemDetailTopBar("Configuración", goBack)
                 MainDestination.NOTIFICATIONS -> NotificationsTopBar(onBackClick = goBack)
                 MainDestination.SEARCH -> Unit // SearchScreen trae su propia barra editable.
@@ -72,13 +85,27 @@ fun MainShellScreen(
         },
         bottomBar = {
             if (destination == MainDestination.TABS) {
-                ChemBottomBar(selectedTab) { selectedTab = it }
+                ChemBottomBar(selectedTab) { tab ->
+                    if (tab != selectedTab) {
+                        tabMeter.onTap(tab)
+                        selectedTab = tab
+                    }
+                }
             }
         }
     ) { insets ->
-        val modifier = Modifier.fillMaxSize().padding(insets)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(insets)
+                .drawWithContent {
+                    drawContent()
+                    if (destination == MainDestination.TABS) tabMeter.onDraw(selectedTab)
+                }
+        ) {
+        val modifier = Modifier.fillMaxSize()
         when (destination) {
-            MainDestination.TABS -> holder.SaveableStateProvider(selectedTab.name) {
+            MainDestination.TABS -> if (!TEST_EMPTY_TABS) holder.SaveableStateProvider(selectedTab.name) {
                 when (selectedTab) {
                     MainTab.HOME -> HomeScreen(modifier)
                     MainTab.COURSES -> CoursesScreen(modifier)
@@ -87,6 +114,7 @@ fun MainShellScreen(
                 }
             }
             MainDestination.PROFILE -> ProfileScreen(modifier,
+                activeSpace = currentSpace,
                 onSettings = { destination = MainDestination.SETTINGS },
                 onLogout = onLogout, onMockAction = demoAction)
             MainDestination.SETTINGS -> SettingsScreen(modifier, themeMode, accent,
@@ -96,6 +124,17 @@ fun MainShellScreen(
                 onBack = goBack, onResultClick = demoAction)
             MainDestination.NOTIFICATIONS -> NotificationsScreen(modifier)
         }
+        } // Box
+    }
+    SideEffect {
+        if (destination == MainDestination.TABS) tabMeter.onComposed(selectedTab)
+    }
+    if (spacePickerVisible && destination == MainDestination.PROFILE) {
+        StudySpacePickerDialog(
+            spaces = studySpaces, selectedId = currentSpace.id,
+            onSelect = { selectedSpaceId = it },
+            onDismiss = { spacePickerVisible = false }
+        )
     }
     if (tutorVisible && destination == MainDestination.TABS) {
         TutorAiSheet(contextLabel = "Mi espacio · ${selectedTab.title}",

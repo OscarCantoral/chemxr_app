@@ -5,6 +5,7 @@ import com.example.ch3mxr.core.ui.theme.ChemPalette
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.items
 import com.example.ch3mxr.core.ui.theme.ChemShapes
 import com.example.ch3mxr.core.ui.components.ChemButton
 import androidx.compose.material.icons.Icons
@@ -28,16 +29,26 @@ import com.example.ch3mxr.feature.main.model.DemoCatalog
 fun HomeScreen(modifier: Modifier = Modifier) {
     var category by rememberSaveable { mutableStateOf("Todo") }
     val accent = MaterialTheme.colorScheme.primary
-    MainPage(modifier) {
+    val courses = DemoCatalog.explore.filter {
+        category == "Todo" || it.area == category
+    }
+    MainLazyPage(modifier) {
+        item {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Box(Modifier.size(6.dp).background(accent, ChemShapes.Component))
             Eyebrow("Mi espacio")
         }
+        }
+        item {
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Heading("Hola, Oscar.", 31)
             Text("¿Qué vas a descubrir hoy?", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+        }
+        item {
         FeaturedCourseCard()
+        }
+        item {
         DemoPanel {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 IconTile(Icons.Outlined.AutoAwesome, ChemPalette.TutorTileBackground, accent, 46)
@@ -51,8 +62,14 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 Icon(Icons.Outlined.ArrowForward, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
+        }
+        item {
         Spacer(Modifier.height(2.dp))
+        }
+        item {
         SectionHeading("Explora algo nuevo", "Ver todos")
+        }
+        item {
         Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 listOf("Todo", "Ciencia", "Tecnología").forEach { item ->
@@ -61,10 +78,9 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             }
             DemoFilterButton("Música", category == "Música", Modifier.fillMaxWidth()) { category = "Música" }
         }
-        val courses = DemoCatalog.explore.filter {
-            category == "Todo" || it.area == category
         }
-        courses.forEach { course -> CourseCard(course) }
+        items(courses, key = { it.title }) { course -> CourseCard(course) }
+        item {
         DemoPanel {
             Eyebrow("PUBLICIDAD · EJEMPLO")
             Spacer(Modifier.height(12.dp))
@@ -82,7 +98,11 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             Text("Ocultar anuncios hoy", style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+        }
+        item {
         SectionHeading("Descubre tu área", "Ver más")
+        }
+        item {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             IconTile(Icons.Outlined.Public, ChemPalette.OceanTileBackground, ChemPalette.OceanTileForeground, 78)
             Column(Modifier.weight(1f)) {
@@ -95,7 +115,11 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             }
             Icon(Icons.Outlined.ArrowForward, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+        }
+        item {
         SectionHeading("En tu agenda")
+        }
+        item {
         DemoPanel {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Icon(Icons.Outlined.Science, null, tint = accent)
@@ -107,6 +131,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 }
                 Icon(Icons.Outlined.ArrowForward, null, tint = MaterialTheme.colorScheme.onSurface)
             }
+        }
         }
     }
 }

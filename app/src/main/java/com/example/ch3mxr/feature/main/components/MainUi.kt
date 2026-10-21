@@ -4,6 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +29,17 @@ fun MainPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
             .padding(horizontal = 15.dp).padding(top = 22.dp, bottom = 28.dp),
+        verticalArrangement = Arrangement.spacedBy(ChemDimens.PanelSpacing),
+        content = content
+    )
+}
+
+/** Composición diferida para tabs con listas. Solo se dibujan los elementos visibles. */
+@Composable
+fun MainLazyPage(modifier: Modifier = Modifier, content: LazyListScope.() -> Unit) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(start = 15.dp, end = 15.dp, top = 22.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(ChemDimens.PanelSpacing),
         content = content
     )
