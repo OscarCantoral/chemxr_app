@@ -140,8 +140,6 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpen: (String) -> Unit = {}) {
         item { com.example.ch3mxr.feature.experience.DemoNavRow("Mi estante", "Tus favoritos, apuntes y guardados", Icons.Outlined.Bookmarks) { onOpen("shelf") } }
         item { com.example.ch3mxr.feature.experience.DemoNavRow("Canales que sigues", "Comunicados y contenido de autores", Icons.Outlined.Campaign) { onOpen("channels") } }
         item { com.example.ch3mxr.feature.experience.DemoNavRow("Tutor y comunidad", "Conversaciones y preguntas", Icons.Outlined.Groups) { onOpen("communities") } }
-        item { com.example.ch3mxr.feature.experience.DemoNavRow("Crear aula temporal", "Hasta que expire, comparte materiales con un grupo", Icons.Outlined.School) { onOpen("privateClass") } }
-        item { com.example.ch3mxr.feature.experience.DemoNavRow("Mi membresía", "Plan gratuito y beneficios", Icons.Outlined.CardMembership) { onOpen("membership") } }
         item { SectionHeading("Patrocinado · DEMO") }
         item {
             DemoPanel(modifier=Modifier.clickable { onOpen("adVideo") }) {

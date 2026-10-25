@@ -32,8 +32,15 @@ private val availableSubjects = listOf(
 
 @Composable
 fun EnrollmentPage(space: StudySpace, period: String, modifier: Modifier = Modifier, onOpen:(String)->Unit) {
-    val selected = DemoInteractions.selectedEnrollments
-    val courses = remember { availableSubjects }
+    val selected = remember(space.id) { mutableStateListOf<String>() }
+    val courses = remember(space.id) {
+        if (space.id == "senati") listOf(
+            Subject("Programación de aplicaciones",4,6,"Fundamentos de programación"),
+            Subject("Redes y conectividad",3,5,"Conceptos de redes"),
+            Subject("Bases de datos",4,5,"Ninguno"),
+            Subject("Proyecto integrador",3,4,"Programación")
+        ) else availableSubjects
+    }
     val credits = courses.filter { it.name in selected }.sumOf { it.credits }
     val hours = courses.filter { it.name in selected }.sumOf { it.hours }
     MainPage(modifier) {
@@ -204,13 +211,13 @@ fun ServicesPage(modifier:Modifier=Modifier) {
 }
 
 @Composable
-fun SessionsPage(modifier:Modifier=Modifier) {
+fun SessionsPage(space:StudySpace, modifier:Modifier=Modifier) {
     MainPage(modifier) {
         Eyebrow("Actividades docentes")
         Heading("Sesiones y grabaciones.")
-        GroupPanel("Clase en directo", "Redes y Comunicación de Datos II · DEMO") {
+        GroupPanel("Clase en directo", if(space.id=="senati") "Programación de aplicaciones" else "Redes y Comunicación de Datos II") {
             SimpleInfo("Plataforma", "Meet / Teams / Zoom")
-            SimpleInfo("Fecha", "24/10/2026 · 20:15")
+            SimpleInfo("Hora", if(space.id=="senati") "16:30 – 18:00" else "20:15 – 21:45")
             DemoBadge("Enlace aún no asignado")
         }
         GroupPanel("Clases anteriores", "Grabaciones y transcripciones") {
@@ -263,7 +270,7 @@ fun SyllabusPage(space: StudySpace, modifier:Modifier=Modifier) {
 fun CourseOverviewPage(space:StudySpace,modifier:Modifier=Modifier,onOpen:(String)->Unit) {
     MainPage(modifier) {
         SpaceContextHeader(space, "Curso · Demostración")
-        Heading(if(space.academic) "Redes y Comunicación de Datos II" else "Química básica")
+        Heading(if(space.id=="senati") "Programación de aplicaciones" else if(space.academic) "Redes y Comunicación de Datos II" else "Química básica")
         DemoBadge(if(space.academic) "Curso institucional" else "Acceso abierto")
         Text("Etiquetas: ciencia · tecnología · fundamentos",style=MaterialTheme.typography.labelSmall)
         GroupPanel("Docente", "Perfil público y mensajes") {
@@ -282,7 +289,8 @@ fun CourseOverviewPage(space:StudySpace,modifier:Modifier=Modifier,onOpen:(Strin
             Triple("Sesiones y grabaciones","Clases en línea y transcritas", "sessions"),
             Triple("Mis apuntes","Texto, imágenes y enlaces", "notes"),
             Triple("Calificaciones","Resultados y retroalimentación", "grades"),
-            Triple("Reseñas del curso","Opiniones y valoración", "reviews")
+            Triple("Reseñas del curso","Opiniones y valoración", "reviews"),
+            Triple("Encuesta del curso y docente","Opinión sobre las clases y la enseñanza", "surveys")
         ).forEach { (title,desc,route) -> DemoNavRow(title,desc) { onOpen(route) } }
     }
 }

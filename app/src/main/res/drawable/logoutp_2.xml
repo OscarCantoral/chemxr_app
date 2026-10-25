@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="459"
+    android:viewportHeight="458">
+
+    <!-- Cuadrante superior derecho TRANSPARENTE -->
+
+    <!-- Rojo superior izquierdo -->
+    <path
+        android:fillColor="#D3052C"
+        android:pathData="M0,0 H230 V229 H0 Z" />
+
+    <!-- Negro inferior izquierdo -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M0,230 H230 V458 H0 Z" />
+
+    <!-- Rojo inferior derecho -->
+    <path
+        android:fillColor="#D3052C"
+        android:pathData="M231,230 H459 V458 H231 Z" />
+
+    <!-- Letra U -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M51,48 L91,48 L91,140 L97,146 L133,146 L139,139 L139,48 L179,48 L179,155 L155,178 L75,178 L51,155 Z" />
+
+    <!-- Letra T -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M53,281 H177 V309 H135 L133,311 V406 H96 V310 L95,309 H53 Z" />
+
+    <!-- Letra P -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M283,281 H385 L407,302 V351 L386,371 H322 L319,374 V406 H283 Z" />
+
+    <!-- Hueco rojo de la P -->
+    <path
+        android:fillColor="#D3052C"
+        android:pathData="M322,309 H365 L371,316 V338 L365,344 H319 V312 Z" />
+
+</vector>
+

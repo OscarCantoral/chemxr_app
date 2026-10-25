@@ -3,7 +3,6 @@ package com.example.ch3mxr.feature.profile
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,7 +32,7 @@ fun StudySpacePickerDialog(
                     ChemSelectablePanel(selected = pendingId == space.id, modifier = Modifier.fillMaxWidth(), onClick = { pendingId = space.id }) {
                         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             if (space.academic) SpaceMark(space, 36.dp)
-                            else Icon(Icons.Outlined.Person, null, modifier = Modifier.size(36.dp))
+                            else ChemAvatarImage(avatarSize = 36.dp)
                             Column(Modifier.weight(1f)) {
                                 Text(space.name, fontWeight = FontWeight.Bold)
                                 Text(space.description, style = MaterialTheme.typography.labelSmall)

@@ -43,11 +43,16 @@ fun MainShellScreen(
     var selectedTab by rememberSaveable {mutableStateOf(MainTab.HOME)}
     var destination by rememberSaveable {mutableStateOf(MainDestination.TABS)}
     var settingsFrom by remember {mutableStateOf(MainDestination.PROFILE)}
+    var detailFrom by remember {mutableStateOf(MainDestination.TABS)}
     var tutorVisible by rememberSaveable {mutableStateOf(false)}
     var spacePickerVisible by rememberSaveable {mutableStateOf(false)}
     val routeStack=remember {mutableStateListOf<String>()}
     val tabStates=rememberSaveableStateHolder()
     val openRoute:(String)->Unit={route ->
+        if(destination!=MainDestination.DETAIL) {
+            routeStack.clear()
+            detailFrom=destination
+        }
         routeStack.add(route)
         destination=MainDestination.DETAIL
     }
@@ -67,7 +72,7 @@ fun MainShellScreen(
         when(destination) {
             MainDestination.DETAIL -> {
                 if(routeStack.isNotEmpty()) routeStack.removeAt(routeStack.lastIndex)
-                if(routeStack.isEmpty()) destination=MainDestination.TABS
+                if(routeStack.isEmpty()) destination=detailFrom
             }
             MainDestination.SETTINGS -> destination=settingsFrom
             MainDestination.TABS -> Unit
@@ -99,7 +104,7 @@ fun MainShellScreen(
                 MainDestination.SEARCH -> Unit
             }
         },
-        bottomBar={ if(destination==MainDestination.TABS) ChemBottomBar(selectedTab) {selectedTab=it} }
+        bottomBar={ if(destination==MainDestination.TABS) ChemBottomBar(selectedTab,space) {selectedTab=it} }
     ) {insets ->
         Box(Modifier.fillMaxSize().padding(insets)) {
             val modifier=Modifier.fillMaxSize()
@@ -111,6 +116,8 @@ fun MainShellScreen(
                             MainTab.HOME -> if(space.academic) InstitutionHomeScreen(space,period,modifier,openRoute)
                             else HomeScreen(modifier,onOpen=openRoute)
                             MainTab.COURSES -> CoursesScreen(modifier,space,onOpen=openRoute)
+                            MainTab.CAMPUS -> if(space.academic) CampusHubScreen(space,modifier,openRoute)
+                                else HomeScreen(modifier,onOpen=openRoute)
                             MainTab.COMMUNITY -> CommunityScreen(modifier,space,onOpen=openRoute)
                             MainTab.AGENDA -> AgendaScreen(modifier,space,calendarSources,updateCalendar)
                         }

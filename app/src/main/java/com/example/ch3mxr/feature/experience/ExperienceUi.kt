@@ -20,8 +20,7 @@ import com.example.ch3mxr.feature.profile.model.StudySpace
 
 @Composable
 fun MockNote() {
-    Text("DEMOSTRACIÓN · No conectado a ChemXR API", style=MaterialTheme.typography.labelSmall,
-        color=MaterialTheme.colorScheme.onSurfaceVariant)
+    // Aviso retirado de la interfaz: las operaciones siguen siendo locales hasta enlazar la API.
 }
 
 @Composable
@@ -55,7 +54,7 @@ fun SpaceContextHeader(space: StudySpace, subtitle: String) {
     Row(Modifier.fillMaxWidth(), verticalAlignment=Alignment.CenterVertically, horizontalArrangement=Arrangement.spacedBy(9.dp)) {
         SpaceMark(space)
         Column(Modifier.weight(1f)) {
-            Eyebrow(space.name + if (space.demo) " · DEMO" else "")
+            Eyebrow(space.name)
             Text(subtitle, color=MaterialTheme.colorScheme.onSurfaceVariant, style=MaterialTheme.typography.labelSmall)
         }
         if (space.academic) DemoBadge("Institucional")

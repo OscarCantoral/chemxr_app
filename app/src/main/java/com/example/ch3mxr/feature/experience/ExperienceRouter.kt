@@ -25,7 +25,7 @@ private val pageTitles = mapOf(
     "communities" to "Comunidad", "communityList" to "Comunidades", "communityDetail" to "Publicaciones",
     "channels" to "Canales", "messages" to "Mensajes", "forum" to "Foro del curso", "teacher" to "Docente",
     "reviews" to "Reseñas", "achievements" to "Logros", "jobs" to "Bolsa de trabajo", "support" to "Soporte",
-    "privateClass" to "Crear aula privada", "studentCard" to "Carnet virtual", "membership" to "Mi membresía", "personalData" to "Datos personales", "adVideo" to "Publicidad · DEMO"
+"studentCard" to "Carnet virtual", "membership" to "Mi membresía", "personalData" to "Datos personales", "privacy" to "Privacidad", "security" to "Seguridad", "adVideo" to "Publicidad · DEMO"
 )
 fun experienceTitle(route: String): String = pageTitles[route] ?: "ChemXR"
 
@@ -40,7 +40,7 @@ fun ExperiencePageScreen(route:String,space:StudySpace,period:String, modifier:M
         "documents" -> DocumentsPage(space,modifier)
         "procedures" -> ProceduresPage(modifier)
         "services" -> ServicesPage(modifier)
-        "sessions" -> SessionsPage(modifier)
+        "sessions" -> SessionsPage(space,modifier)
         "surveys" -> SurveysPage(modifier)
         "course" -> CourseOverviewPage(space,modifier,onOpen)
         "modules" -> ModulesPage(space,modifier,onOpen)
@@ -66,7 +66,8 @@ fun ExperiencePageScreen(route:String,space:StudySpace,period:String, modifier:M
         "teacher" -> TeacherPage(modifier,onOpen)
         "reviews" -> ReviewsPage(modifier)
         "achievements" -> AchievementsPage(modifier)
-        "privateClass" -> PrivateClassPage(modifier)
+        "privacy" -> GenericMockPage("Privacidad", "Controles de visibilidad y uso de datos", listOf("Quién puede ver mi perfil", "Bloqueos y denuncias", "Consentimientos"),modifier)
+        "security" -> GenericMockPage("Seguridad", "Accesos e identidad", listOf("Dispositivos", "Contraseña", "Sesiones activas"),modifier)
         "studentCard" -> StudentCardPage(space,period,modifier)
         "membership" -> MembershipPage(space,modifier)
         "personalData" -> PersonalDataPage(modifier)
@@ -112,14 +113,8 @@ private fun MembershipPage(space:StudySpace,modifier:Modifier) {
         Heading("Mis membresías.")
         GroupPanel("Mi espacio · Plan gratuito", "Plan de ChemXR") {
             SimpleInfo("Estado","Activo · DEMO")
-            SimpleInfo("Límites","1 aula temporal · 3 participantes")
+            SimpleInfo("Beneficios", "Sujetos a definición de los planes")
             DemoBadge("Gratuito")
-        }
-        if(space.academic) GroupPanel("Afiliación a ${space.name}", "Asignación institucional simulada") {
-            SimpleInfo("Rol", "Estudiante")
-            SimpleInfo("Programa",space.program)
-            SimpleInfo("Institución",space.name)
-            DemoBadge("Acceso institucional de ejemplo")
         }
         Text("La membresía de ChemXR y la matrícula de una institución son independientes.")
     }

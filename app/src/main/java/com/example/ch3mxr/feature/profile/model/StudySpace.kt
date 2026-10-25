@@ -23,6 +23,8 @@ data class StudySpace(
     val studentCode: String = "",
     val program: String = "",
     val campus: String = "",
+    val modality: String = "Presencial",
+    val institutionalEmail: String = "",
     val periods: List<String> = emptyList()
 )
 
@@ -32,15 +34,17 @@ object DemoStudySpaces {
         StudySpace(
             "utp", "UTP", "Universidad Tecnológica del Perú · DEMO",
             academic = true, demo = true, primary = Color(0xFFB50D30), secondary = Color.Black,
-            iconLight = R.drawable.ic_utp_light, iconDark = R.drawable.ic_utp_dark,
+            iconLight = R.drawable.logoutp_2, iconDark = R.drawable.logoutp,
             studentCode = "U-DEMO-001", program = "Ingeniería de Sistemas", campus = "Lima Sur",
+            modality = "A distancia · 80 % virtual", institutionalEmail = "alumno@utp.edu.pe",
             periods = listOf("2026 - Ciclo 2", "2026 - Ciclo 1", "2025 - Ciclo 2")
         ),
         StudySpace(
             "senati", "Senati", "Institución tecnológica · DEMO",
             academic = true, demo = true, primary = Color(0xFF0A39E4), secondary = Color.White,
-            iconLight = R.drawable.ic_senati_light, iconDark = R.drawable.ic_senati_dark,
+            iconLight = R.drawable.logosena_2, iconDark = R.drawable.logosena,
             studentCode = "S-DEMO-002", program = "Desarrollo de Software", campus = "Lima",
+            modality = "Presencial", institutionalEmail = "alumno@senati.pe",
             periods = listOf("2026 - Periodo II", "2026 - Periodo I")
         )
     )

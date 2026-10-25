@@ -87,9 +87,7 @@ fun CoursesScreen(
         }
         }
         if(space.academic) {
-            item { DemoNavRow("Matrícula institucional", "Seleccionar asignaturas y revisar créditos",Icons.Outlined.AppRegistration) {onOpen("enrollment")} }
-            item { DemoNavRow("Calificaciones y asistencias", "Consulta resultados del periodo",Icons.Outlined.Assessment) {onOpen("record")} }
-            item { DemoNavRow("Sesiones virtuales", "En vivo y grabaciones",Icons.Outlined.VideoCall) {onOpen("sessions")} }
+            item { DemoNavRow("Récord y progreso académico", "Malla, créditos, notas y asistencia",Icons.Outlined.Assessment) {onOpen("record")} }
         }
         if(!space.academic) item {
             DemoNavRow("Patrocinado · Taller de ciencias", "Publicidad de ejemplo · Abrir video",Icons.Outlined.SmartDisplay) {onOpen("adVideo")}

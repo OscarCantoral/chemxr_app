@@ -37,12 +37,14 @@ fun ProfileScreen(
             ChemButton("Editar perfil",{onOpen("personalData")},Modifier.weight(1f))
             ChemButton("Perfil público",{onMockAction("Perfil público")},Modifier.weight(1f),style=ChemButtonStyle.OUTLINED)
         }
-        SpaceContextHeader(activeSpace,"Espacio activo · Puedes cambiarlo desde el título")
+
         if(activeSpace.academic) {
-            GroupPanel("Estado académico · DEMO", "Identidad académica del espacio seleccionado") {
+            GroupPanel("Información institucional", "Datos de tu inscripción académica") {
                 SimpleInfo("Código",activeSpace.studentCode)
                 SimpleInfo("Carrera",activeSpace.program)
-                SimpleInfo("Sede",activeSpace.campus)
+                SimpleInfo("Campus",activeSpace.campus)
+                SimpleInfo("Modalidad",activeSpace.modality)
+                SimpleInfo("Correo institucional",activeSpace.institutionalEmail)
                 Box {
                     ChemButton("Periodo: $activePeriod  ▾",{periodMenu=true},Modifier.fillMaxWidth(),style=ChemButtonStyle.OUTLINED)
                     DropdownMenu(expanded=periodMenu,onDismissRequest={periodMenu=false}) {
@@ -51,10 +53,8 @@ fun ProfileScreen(
                 }
             }
             ChemMenuGroup {
-                ChemMenuRow(Icons.Outlined.Badge,"Carnet virtual","Código y datos institucionales · DEMO",{onOpen("studentCard")})
-                ChemMenuRow(Icons.Outlined.AppRegistration,"Matrícula","Cursos, créditos y periodo",{onOpen("enrollment")})
-                ChemMenuRow(Icons.Outlined.AccountBalance,"Cuenta corriente","Pagos y recibos",{onOpen("finance")})
-                ChemMenuRow(Icons.Outlined.Description,"Documentos institucionales","Normativa oficial",{onOpen("documents")},showDivider=false)
+                ChemMenuRow(Icons.Outlined.Badge,"Carnet virtual","Identificación académica",{onOpen("studentCard")})
+                ChemMenuRow(Icons.Outlined.AccountBalance,"Cuenta corriente","Pagos, cuotas y comprobantes",{onOpen("finance")},showDivider=false)
             }
         }
         Eyebrow("Mi aprendizaje · ${activeSpace.name}")
@@ -63,12 +63,13 @@ fun ProfileScreen(
             ChemMenuRow(Icons.Outlined.Bookmarks,"Mi estante","Lecturas, favoritos y apuntes",{onOpen("shelf")})
             ChemMenuRow(Icons.Outlined.Forum,"Mis consultas","Mensajes académicos",{onOpen("messages")},showDivider=false)
         }
-        GroupPanel("Mi membresía ChemXR", "Se gestiona independientemente del campus") {
-            Text("Gratuito",fontSize=25.sp,fontWeight=FontWeight.Bold)
-            Spacer(Modifier.height(8.dp))
-            ChemButton("Ver membresías y beneficios",{onOpen("membership")},Modifier.fillMaxWidth(),style=ChemButtonStyle.OUTLINED)
+        if(!activeSpace.academic) {
+            GroupPanel("Mi plan ChemXR", "Beneficios de tu espacio personal") {
+                Text("Gratuito",fontSize=25.sp,fontWeight=FontWeight.Bold)
+                Spacer(Modifier.height(8.dp))
+                ChemButton("Ver plan",{onOpen("membership")},Modifier.fillMaxWidth(),style=ChemButtonStyle.OUTLINED)
+            }
         }
-        if(!activeSpace.academic) DemoNavRow("Quiero enseñar","Crear un aula gratuita temporal",Icons.Outlined.School) {onOpen("privateClass")}
         DemoNavRow("Ayuda y soporte","Centro de atención y asistencia",Icons.Outlined.SupportAgent) {onOpen("support")}
         ChemButton("Configuración",onSettings,Modifier.fillMaxWidth(),style=ChemButtonStyle.OUTLINED,leadingIcon=Icons.Outlined.Settings)
         TextButton(onClick=onLogout) {

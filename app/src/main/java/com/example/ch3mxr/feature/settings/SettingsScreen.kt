@@ -32,7 +32,6 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("chemxr_demo_preferences", android.content.Context.MODE_PRIVATE) }
-    var largeText by rememberSaveable { mutableStateOf(false) }
     var notifications by remember { mutableStateOf(prefs.getBoolean("enable_notifications", true)) }
     var push by remember { mutableStateOf(prefs.getBoolean("push_academic", true)) }
     var email by remember { mutableStateOf(prefs.getBoolean("email_digest", false)) }
@@ -45,9 +44,9 @@ fun SettingsScreen(
         Eyebrow("Cuenta")
         ChemMenuGroup {
             ChemMenuRow(Icons.Outlined.Person, "Cuenta y datos personales", onClick = { onOpen("personalData") })
-            ChemMenuRow(Icons.Outlined.Lock, "Privacidad", onClick = { onMockAction("Privacidad") })
+            ChemMenuRow(Icons.Outlined.Lock, "Privacidad", onClick = { onOpen("privacy") })
             ChemMenuRow(Icons.Outlined.VpnKey, "Seguridad y cuentas vinculadas",
-                onClick = { onMockAction("Seguridad") }, showDivider = false)
+                onClick = { onOpen("security") }, showDivider = false)
         }
         Eyebrow("Experiencia")
         ChemPanel {
@@ -79,8 +78,6 @@ fun SettingsScreen(
                 }
             }
             Spacer(Modifier.height(19.dp))
-            ChemDemoToggleRow("Texto más grande", "Mejora la lectura", largeText) { largeText = it }
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .22f))
             ChemDemoToggleRow("Activar notificaciones", "Control local de preferencias; permiso push aún no solicitado", notifications) {
                 notifications = it; prefs.edit().putBoolean("enable_notifications", it).apply()
             }
@@ -104,22 +101,12 @@ fun SettingsScreen(
         ChemMenuGroup {
             ChemMenuRow(Icons.Outlined.Forum, "Chat y comunicación", onClick = { onMockAction("Chat") })
             ChemMenuRow(Icons.Outlined.Folder, "Datos y almacenamiento", onClick = { onMockAction("Datos y almacenamiento") })
-            ChemMenuRow(Icons.Outlined.CreditCard, "Suscripción y facturación", onClick = { onOpen("membership") })
+            if(!academicSpace) ChemMenuRow(Icons.Outlined.CreditCard, "Suscripción y facturación", onClick = { onOpen("membership") })
             ChemMenuRow(Icons.Outlined.Info, "Acerca de, términos y privacidad",
                 onClick = { onMockAction("Acerca de") }, showDivider = false)
         }
-        Eyebrow("Laboratorio del prototipo")
-        ChemPanel {
-            Text("Estos controles simulan opciones locales. No son permisos ni políticas del servidor.",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(18.dp))
-            ChemButton("Probar cuenta gratuita", { onMockAction("Escenario gratuito") },
-                modifier = Modifier.fillMaxWidth(), style = ChemButtonStyle.OUTLINED)
-        }
     }
 }
-
 @Composable
 private fun ChemDemoToggleRow(
     title: String,

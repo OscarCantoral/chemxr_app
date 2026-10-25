@@ -47,17 +47,6 @@ fun ChemHomeTopBar(
                 Box(Modifier.align(Alignment.TopEnd).size(5.dp).background(c.primary,ChemShapes.Component))
             }
         }
-        if(activeSpace!=null) {
-            Row(
-                Modifier.fillMaxWidth().clickable(onClick=onSpaceClick).padding(horizontal=15.dp,vertical=6.dp),
-                verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)
-            ) {
-                SpaceMark(activeSpace,22.dp)
-                Text(activeSpace.name,style=MaterialTheme.typography.labelMedium,color=c.onBackground)
-                Icon(Icons.Outlined.KeyboardArrowDown,"Cambiar espacio",Modifier.size(17.dp),tint=c.primary)
-                if(activeSpace.demo) Text("DEMO",style=MaterialTheme.typography.labelSmall,color=c.onSurfaceVariant)
-            }
-        }
         HorizontalDivider(color=c.outline.copy(alpha=.30f),thickness=1.dp)
     }
 }
