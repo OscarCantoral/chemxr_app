@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
@@ -28,10 +29,12 @@ fun ChemXRTheme(
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
 
+    // Contraste de texto sobre marcas institucionales oscuras (UTP rojo y Senati azul).
+    val accentText = if (accentColor.luminance() < .48f) Color.White else ChemDarkBackground
     val scheme = if (isDark) {
         darkColorScheme(
             primary = accentColor,
-            onPrimary = ChemDarkBackground,
+            onPrimary = accentText,
             background = ChemDarkBackground,
             onBackground = Color.White,
             surface = ChemDarkSurface,
@@ -42,7 +45,7 @@ fun ChemXRTheme(
     } else {
         lightColorScheme(
             primary = accentColor,
-            onPrimary = ChemDarkBackground,
+            onPrimary = accentText,
             background = ChemLightBackground,
             onBackground = ChemDarkBackground,
             surface = ChemLightSurface,

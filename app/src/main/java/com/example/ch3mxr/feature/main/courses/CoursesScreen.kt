@@ -1,5 +1,9 @@
 package com.example.ch3mxr.feature.main.courses
 
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.outlined.*
+import com.example.ch3mxr.feature.profile.model.*
+import com.example.ch3mxr.feature.experience.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,10 +29,16 @@ import com.example.ch3mxr.feature.main.components.*
 import com.example.ch3mxr.feature.main.model.DemoCatalog
 
 @Composable
-fun CoursesScreen(modifier: Modifier = Modifier) {
-    var section by rememberSaveable { mutableStateOf("Mis aulas y cursos") }
+fun CoursesScreen(
+    modifier: Modifier = Modifier,
+    space: StudySpace = DemoStudySpaces.available.first(),
+    onOpen:(String)->Unit = {}
+) {
+    var section by rememberSaveable(space.id) { mutableStateOf(if(space.academic) "Mis asignaturas" else "Mis aulas y cursos") }
     var status by rememberSaveable { mutableStateOf("Todos") }
-    val initial = if (section == "Catálogo abierto") DemoCatalog.explore else DemoCatalog.myCourses
+    val initial = if (space.academic) {
+        if(space.id == "utp") DemoCatalog.utpCourses else DemoCatalog.senatiCourses
+    } else if (section == "Catálogo abierto") DemoCatalog.explore else DemoCatalog.myCourses
     val filtered = when (status) {
         "En curso" -> initial.filter { it.progress > 0f && it.progress < 1f }
         "Completados" -> initial.filter { it.progress >= 1f }
@@ -36,7 +46,7 @@ fun CoursesScreen(modifier: Modifier = Modifier) {
     }
     MainLazyPage(modifier) {
         item {
-        Eyebrow("Mi espacio · Tu aprendizaje")
+        Eyebrow("${space.name} · Tu aprendizaje")
         }
         item {
         Column {
@@ -47,15 +57,15 @@ fun CoursesScreen(modifier: Modifier = Modifier) {
         }
         item {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            ShortcutTile("Mi progreso", Icons.Outlined.BarChart, Modifier.weight(1f))
-            ShortcutTile("Biblioteca", Icons.Outlined.BookmarkBorder, Modifier.weight(1f))
-            ShortcutTile("Practicar", Icons.Outlined.Bolt, Modifier.weight(1f))
+            ShortcutTile("Mi progreso", Icons.Outlined.BarChart, Modifier.weight(1f).clickable { onOpen("record") })
+            ShortcutTile("Mi estante", Icons.Outlined.BookmarkBorder, Modifier.weight(1f).clickable { onOpen("shelf") })
+            ShortcutTile("Practicar", Icons.Outlined.Bolt, Modifier.weight(1f).clickable { onOpen("quiz") })
         }
         }
         item {
         Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface, ChemShapes.Component)
             .padding(5.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            listOf("Mis aulas y cursos", "Catálogo abierto").forEach { item ->
+            (if(space.academic) listOf("Mis asignaturas", "Periodo actual") else listOf("Mis aulas y cursos", "Catálogo abierto")).forEach { item ->
                 ChemSelectablePanel(
                     selected = section == item,
                     modifier = Modifier.weight(1f),
@@ -76,6 +86,14 @@ fun CoursesScreen(modifier: Modifier = Modifier) {
             }
         }
         }
+        if(space.academic) {
+            item { DemoNavRow("Matrícula institucional", "Seleccionar asignaturas y revisar créditos",Icons.Outlined.AppRegistration) {onOpen("enrollment")} }
+            item { DemoNavRow("Calificaciones y asistencias", "Consulta resultados del periodo",Icons.Outlined.Assessment) {onOpen("record")} }
+            item { DemoNavRow("Sesiones virtuales", "En vivo y grabaciones",Icons.Outlined.VideoCall) {onOpen("sessions")} }
+        }
+        if(!space.academic) item {
+            DemoNavRow("Patrocinado · Taller de ciencias", "Publicidad de ejemplo · Abrir video",Icons.Outlined.SmartDisplay) {onOpen("adVideo")}
+        }
         if (filtered.isEmpty()) {
             item {
                 DemoPanel {
@@ -85,7 +103,7 @@ fun CoursesScreen(modifier: Modifier = Modifier) {
                 }
             }
         } else {
-            items(filtered, key = { it.title }) { course -> CourseCard(course) }
+            items(filtered, key = { it.title }) { course -> CourseCard(course,Modifier.clickable {onOpen("course")}) }
         }
     }
 }

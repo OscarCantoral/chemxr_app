@@ -2,6 +2,10 @@ package com.example.ch3mxr.feature.main.community
 
 import com.example.ch3mxr.core.ui.theme.ChemPalette
 
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.outlined.*
+import com.example.ch3mxr.feature.profile.model.*
+import com.example.ch3mxr.feature.experience.DemoNavRow
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,11 +26,15 @@ import androidx.compose.ui.unit.sp
 import com.example.ch3mxr.feature.main.components.*
 
 @Composable
-fun CommunityScreen(modifier: Modifier = Modifier) {
+fun CommunityScreen(
+    modifier:Modifier=Modifier,
+    space: StudySpace=DemoStudySpaces.available.first(),
+    onOpen:(String)->Unit={}
+) {
     var groupFilter by rememberSaveable { mutableStateOf("Descubrir") }
     MainLazyPage(modifier) {
         item {
-        Eyebrow("Mi espacio · Aprender juntos")
+        Eyebrow("${space.name} · Aprender juntos")
         }
         item {
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -36,7 +44,7 @@ fun CommunityScreen(modifier: Modifier = Modifier) {
         }
         }
         item {
-        SectionHeading("Tus comunidades", "Crear comunidad")
+        SectionHeading("Tus comunidades", "Explorar", onAction={onOpen("communityList")})
         }
         item {
         Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
@@ -46,19 +54,19 @@ fun CommunityScreen(modifier: Modifier = Modifier) {
         }
         item {
         if (groupFilter == "Descubrir" || groupFilter == "Mis comunidades") {
-            CommunityTile("Curiosos por la ciencia", "Preguntar es el primer paso", "342 miembros · Eres miembro", science = true)
+            CommunityTile(if(space.academic) "Comunidad ${space.name}" else "Curiosos por la ciencia", if(space.academic) "Comunidad académica institucional" else "Preguntar es el primer paso", if(space.academic) "Miembros de ${space.name} · DEMO" else "342 miembros · Eres miembro", science = true, onClick={onOpen("communityDetail")})
         }
         }
         item {
         if (groupFilter == "Descubrir") {
-            CommunityTile("Programamos juntos", "Ideas que se convierten en proyectos", "186 miembros", science = false)
+            CommunityTile(if(space.academic) "Estudiantes de ${space.name}" else "Programamos juntos", if(space.academic) "Grupo de proyectos y consultas" else "Ideas que se convierten en proyectos", if(space.academic) "Privada · Solicitud de ingreso" else "186 miembros", science = false, onClick={onOpen("communityList")})
         }
         }
         item {
         Spacer(Modifier.height(8.dp))
         }
         item {
-        SectionHeading("Conversaciones que inspiran")
+        SectionHeading("Conversaciones que inspiran", "Ver publicaciones",onAction={onOpen("communityDetail")})
         }
         item {
         DemoPanel {
@@ -69,9 +77,9 @@ fun CommunityScreen(modifier: Modifier = Modifier) {
                 }
                 Spacer(Modifier.width(11.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("Lucía Torres", fontWeight = FontWeight.Bold, fontSize = 13.sp,
+                    Text(if(space.academic) "Delegado de ${space.name}" else "Lucía Torres", fontWeight = FontWeight.Bold, fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurface)
-                    Text("Curiosos por la ciencia", fontSize = 10.sp,
+                    Text(if(space.academic) "Comunidad ${space.name}" else "Curiosos por la ciencia", fontSize = 10.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Text("Hace 2 h", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -91,12 +99,16 @@ fun CommunityScreen(modifier: Modifier = Modifier) {
             }
         }
         }
+        item { DemoNavRow("Canales", "Difusión unidireccional de autores",Icons.Outlined.Campaign) {onOpen("channels")} }
+        item { DemoNavRow("Chats académicos", "Docentes y equipos de trabajo",Icons.Outlined.Chat) {onOpen("messages")} }
+        item { DemoNavRow("Explorar comunidades", "Públicas y privadas con solicitud",Icons.Outlined.Groups) {onOpen("communityList")} }
+        if(!space.academic) item { DemoNavRow("Patrocinado · Aprende colaborando", "Publicidad de ejemplo",Icons.Outlined.SmartDisplay) {onOpen("adVideo")} }
     }
 }
 
 @Composable
-private fun CommunityTile(title: String, subtitle: String, footer: String, science: Boolean) {
-    DemoPanel {
+private fun CommunityTile(title: String, subtitle: String, footer: String, science: Boolean, onClick:()->Unit) {
+    DemoPanel(modifier=Modifier.clickable(onClick=onClick)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(13.dp)) {
             IconTile(
                 icon = if (science) Icons.Outlined.Public else Icons.Outlined.Code,

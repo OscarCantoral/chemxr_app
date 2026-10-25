@@ -2,6 +2,8 @@ package com.example.ch3mxr.feature.main.home
 
 import com.example.ch3mxr.core.ui.theme.ChemPalette
 
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,7 +28,7 @@ import com.example.ch3mxr.feature.main.components.*
 import com.example.ch3mxr.feature.main.model.DemoCatalog
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier, onOpen: (String) -> Unit = {}) {
     var category by rememberSaveable { mutableStateOf("Todo") }
     val accent = MaterialTheme.colorScheme.primary
     val courses = DemoCatalog.explore.filter {
@@ -46,7 +48,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         }
         }
         item {
-        FeaturedCourseCard()
+        FeaturedCourseCard(onOpen = { onOpen("course") })
         }
         item {
         DemoPanel {
@@ -79,9 +81,9 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             DemoFilterButton("Música", category == "Música", Modifier.fillMaxWidth()) { category = "Música" }
         }
         }
-        items(courses, key = { it.title }) { course -> CourseCard(course) }
+        items(courses, key = { it.title }) { course -> CourseCard(course, Modifier.clickable { onOpen("course") }) }
         item {
-        DemoPanel {
+        DemoPanel(modifier = Modifier.clickable { onOpen("adVideo") }) {
             Eyebrow("PUBLICIDAD · EJEMPLO")
             Spacer(Modifier.height(12.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -133,11 +135,25 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             }
         }
         }
+        item { SectionHeading("Sigue descubriendo") }
+        item { com.example.ch3mxr.feature.experience.DemoNavRow("Biblioteca del espacio", "Bases de datos, revistas, enlaces y colecciones", Icons.Outlined.LocalLibrary) { onOpen("library") } }
+        item { com.example.ch3mxr.feature.experience.DemoNavRow("Mi estante", "Tus favoritos, apuntes y guardados", Icons.Outlined.Bookmarks) { onOpen("shelf") } }
+        item { com.example.ch3mxr.feature.experience.DemoNavRow("Canales que sigues", "Comunicados y contenido de autores", Icons.Outlined.Campaign) { onOpen("channels") } }
+        item { com.example.ch3mxr.feature.experience.DemoNavRow("Tutor y comunidad", "Conversaciones y preguntas", Icons.Outlined.Groups) { onOpen("communities") } }
+        item { com.example.ch3mxr.feature.experience.DemoNavRow("Crear aula temporal", "Hasta que expire, comparte materiales con un grupo", Icons.Outlined.School) { onOpen("privateClass") } }
+        item { com.example.ch3mxr.feature.experience.DemoNavRow("Mi membresía", "Plan gratuito y beneficios", Icons.Outlined.CardMembership) { onOpen("membership") } }
+        item { SectionHeading("Patrocinado · DEMO") }
+        item {
+            DemoPanel(modifier=Modifier.clickable { onOpen("adVideo") }) {
+                Text("Aprende a tu ritmo con experiencias nuevas", color = MaterialTheme.colorScheme.onSurface, fontWeight=FontWeight.Bold)
+                Text("Anuncio de ejemplo · El video y las campañas reales se integrarán con el servidor.",style=MaterialTheme.typography.labelSmall)
+            }
+        }
     }
 }
 
 @Composable
-private fun FeaturedCourseCard() {
+private fun FeaturedCourseCard(onOpen: () -> Unit) {
     val lime = MaterialTheme.colorScheme.primary
     Surface(
         modifier = Modifier.fillMaxWidth().height(248.dp),
@@ -166,7 +182,7 @@ private fun FeaturedCourseCard() {
                 Spacer(Modifier.weight(1f))
                 ChemButton(
                     text = "Continuar",
-                    onClick = { /* Demo: al implementar el curso, conectar aquí */ },
+                    onClick = onOpen,
                     modifier = Modifier.width(160.dp),
                     leadingIcon = Icons.Outlined.ArrowForward
                 )

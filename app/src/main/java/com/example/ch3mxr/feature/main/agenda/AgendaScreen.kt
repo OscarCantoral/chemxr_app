@@ -1,136 +1,113 @@
 package com.example.ch3mxr.feature.main.agenda
 
-import com.example.ch3mxr.core.ui.theme.ChemPalette
-
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import com.example.ch3mxr.core.ui.theme.ChemShapes
-import com.example.ch3mxr.core.ui.components.ChemSelectablePanel
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CalendarToday
-import androidx.compose.material.icons.outlined.TrendingUp
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.ch3mxr.core.ui.components.ChemSelectablePanel
+import com.example.ch3mxr.core.ui.components.ChemPanel
+import com.example.ch3mxr.feature.experience.*
 import com.example.ch3mxr.feature.main.components.*
+import com.example.ch3mxr.feature.profile.model.*
 
+/** Únicamente Mi espacio puede incorporar calendarios institucionales externos. */
 @Composable
-fun AgendaScreen(modifier: Modifier = Modifier) {
-    var day by rememberSaveable { mutableStateOf(19) }
+fun AgendaScreen(
+    modifier: Modifier = Modifier,
+    space: StudySpace = DemoStudySpaces.available.first(),
+    includeOther: Set<String> = emptySet(),
+    onIncludeOtherChange: (String, Boolean) -> Unit = { _, _ -> }
+) {
+    var day by rememberSaveable { mutableIntStateOf(24) }
     var category by rememberSaveable { mutableStateOf("Todo") }
+    var showSources by rememberSaveable { mutableStateOf(false) }
+    val visibleSpaces = if(space.academic) setOf(space.id) else setOf("personal") + includeOther
+    val events = ChemDemoData.events.filter { it.spaceId in visibleSpaces && it.day == day && (category=="Todo" || it.kind==category) }
     MainLazyPage(modifier) {
+        item { SpaceContextHeader(space,"A tu ritmo · Octubre de 2026") }
         item {
-        Eyebrow("Mi espacio · A tu ritmo")
+            Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
+                Heading("Tu agenda.",28)
+                Icon(Icons.Outlined.CalendarMonth,null,tint=MaterialTheme.colorScheme.primary)
+            }
         }
         item {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Heading("Tu agenda.", 28)
-            Icon(Icons.Outlined.CalendarToday, null, tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(25.dp))
-        }
-        }
-        item {
-        Text("Octubre de 2026", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
-        }
-        item {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-            listOf("Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do").forEachIndexed { index, name ->
-                val selected = (19+index) == day
-                val c = MaterialTheme.colorScheme
-                ChemSelectablePanel(
-                    selected = selected,
-                    modifier = Modifier.weight(1f).height(80.dp),
-                    onClick = { day = 19 + index }
-                ) {
-                    Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(name, fontSize = 10.sp, color = if(selected) c.onPrimary else c.onSurfaceVariant)
-                        Spacer(Modifier.height(7.dp))
-                        Text("${19+index}", fontSize = 17.sp, fontWeight = FontWeight.Bold,
-                            color = if(selected) c.onPrimary else c.onSurfaceVariant)
-                        Text("•", color = if(selected) c.onPrimary else c.onSurfaceVariant, fontSize = 11.sp)
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(5.dp)) {
+                listOf("Lu","Ma","Mi","Ju","Vi","Sá","Do").forEachIndexed { index,label ->
+                    val d=19+index
+                    ChemSelectablePanel(selected=day==d,modifier=Modifier.weight(1f).height(70.dp),onClick={day=d}) {
+                        Column(horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.Center) {
+                            Text(label,style=MaterialTheme.typography.labelSmall)
+                            Text(d.toString(),fontWeight=FontWeight.Bold)
+                        }
                     }
                 }
             }
         }
-        }
         item {
-        Text("Ir a otra fecha", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-        item {
-        DemoPanel {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("${day.toString().padStart(2, '0')}/10/2026", modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                Icon(Icons.Outlined.CalendarToday, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(18.dp))
-            }
-        }
-        }
-        item {
-        Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                listOf("Todo", "Clase", "Entrega").forEach { item ->
-                    DemoFilterButton(item, category == item, Modifier.weight(1f)) { category = item }
+            Row(horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+                listOf("Todo","Clase","Entrega").forEach { choice ->
+                    DemoFilterButton(choice, category==choice,Modifier.weight(1f)) {category=choice}
                 }
             }
-            DemoFilterButton("Plan personal", category == "Plan personal", Modifier.fillMaxWidth()) { category = "Plan personal" }
         }
-        }
-        item {
-        Spacer(Modifier.height(9.dp))
-        }
-        item {
-        SectionHeading("Tu día, paso a paso", "Planificar estudio")
-        }
-        item {
-        if (day == 19 && (category == "Todo" || category == "Plan personal")) {
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("18:00", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp,
-                    modifier = Modifier.padding(top = 8.dp))
-                Column(modifier = Modifier.weight(1f).padding(start = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Surface(color = ChemPalette.AgendaChipBackground, shape = ChemShapes.Component) {
-                        Text("Plan personal", modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
-                            fontSize = 10.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+        if(!space.academic) {
+            item {
+                DemoNavRow("Fuentes de calendario", "Selecciona qué instituciones aparecen solo aquí",Icons.Outlined.FilterList) {
+                    showSources=!showSources
+                }
+            }
+            if(showSources) item {
+                ChemPanel {
+                    Text("Mostrar eventos de:",fontWeight=FontWeight.Bold)
+                    DemoStudySpaces.available.forEach { option ->
+                        Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
+                            Checkbox(checked=option.id=="personal" || option.id in includeOther,
+                                onCheckedChange={checked->if(option.id!="personal")onIncludeOtherChange(option.id,checked)},
+                                enabled=option.id!="personal")
+                            SpaceMark(option,24.dp)
+                            Spacer(Modifier.width(8.dp))
+                            Text(option.name)
+                        }
                     }
-                    Text("Repasar estructura atómica", color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                    Text("Química básica", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-                    Text("Marcar realizada", color = MaterialTheme.colorScheme.primary,
-                        fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text("La agenda de UTP nunca muestra eventos de Senati, ni viceversa.",style=MaterialTheme.typography.labelSmall)
                 }
             }
+        }
+        item { SectionHeading("Tu día, paso a paso") }
+        if(events.isEmpty()) item {
+            ChemPanel {Text("No hay actividades para este día y filtros.")}
         } else {
-            Text("No hay actividades de ejemplo para este filtro.",
-                color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
-        }
-        }
-        item {
-        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .25f))
-        }
-        item {
-        DemoPanel {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                IconTile(Icons.Outlined.TrendingUp, ChemPalette.NotificationTileBackground, MaterialTheme.colorScheme.primary, 45)
-                Column {
-                    Eyebrow("Mi objetivo semanal")
-                    Spacer(Modifier.height(7.dp))
-                    Text("0 de 4 actividades", fontSize = 21.sp, fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface)
-                    Text("Haz del aprendizaje un hábito.", fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Spacer(Modifier.height(8.dp))
-                    Text("Ajustar objetivo", fontSize = 12.sp, fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary)
+            items(events.size) { index ->
+                val event=events[index]
+                val owner=DemoStudySpaces.available.first {it.id==event.spaceId}
+                Surface(
+                    color=MaterialTheme.colorScheme.surface,shape=com.example.ch3mxr.core.ui.theme.ChemShapes.Component,
+                    border=BorderStroke(1.dp,owner.primary.copy(alpha=.55f)),modifier=Modifier.fillMaxWidth()
+                ) {
+                    Row(Modifier.padding(13.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(11.dp)) {
+                        SpaceMark(owner,32.dp)
+                        Column(Modifier.weight(1f)) {
+                            Text(event.title,fontWeight=FontWeight.Bold)
+                            Text("${event.time} · ${event.kind} · ${owner.name}",style=MaterialTheme.typography.labelSmall)
+                        }
+                    }
                 }
             }
         }
+        item {
+            GroupPanel("Mi objetivo semanal", "4 actividades por semana · DEMO") {
+                LinearProgressIndicator(progress={.25f},modifier=Modifier.fillMaxWidth())
+            }
         }
     }
 }
