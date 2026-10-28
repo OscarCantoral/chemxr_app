@@ -6,7 +6,7 @@ on:
       project_key:
         description: "Project Key"
         required: true
-        default: "XXrandR_chemxr_app"
+        default: "OscarCantoral_chemxr_app"
       organization:
         description: "Organization Key"
         required: true
