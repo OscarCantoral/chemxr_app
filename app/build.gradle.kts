@@ -25,6 +25,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Genera reporte JaCoCo (createDebugUnitTestCoverageReport) para SonarCloud
+            enableUnitTestCoverage = true
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
