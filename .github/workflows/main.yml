@@ -37,10 +37,10 @@ jobs:
         id: timestamp
         run: echo "ts=$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
 
-      # Compila la app, corre los tests unitarios y genera el reporte JaCoCo
+      # Compila la app, corre los tests unitarios y genera el reporte KOVER
       # requerido por el análisis de cobertura de SonarCloud.
-      - name: Build, run unit tests and generate JaCoCo coverage
-        run: ./gradlew --no-daemon assembleDebug createDebugUnitTestCoverageReport --stacktrace
+      - name: Build, run unit tests and generate Kover coverage
+        run: ./gradlew --no-daemon assembleDebug koverXmlReport --stacktrace
 
       - name: SonarQube Scan
         uses: DevSecOps-Engineer-Org/reusable-workflows/actions/qa-sonar@v1.0.0
@@ -52,7 +52,8 @@ jobs:
           build-timestamp: ${{ steps.timestamp.outputs.ts }}
           sonar-url: ${{ vars.SONAR_HOST_URL }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
-          coverage-path: app/build/reports/coverage/test/debug/report.xml
+          coverage-tool: kover
+          coverage-path: app/build/reports/kover/report.xml
 
       - name: Print Quality Gate & Coverage Results
         if: always()

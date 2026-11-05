@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -26,8 +27,9 @@ android {
 
     buildTypes {
         debug {
-            // Genera reporte JaCoCo (createDebugUnitTestCoverageReport) para SonarCloud
-            enableUnitTestCoverage = true
+            // La instrumentacion la maneja Kover (koverXmlReport); la JaCoCo de AGP queda fuera
+            // para evitar que dos agentes instrumenten los mismos tests unitarios.
+            enableUnitTestCoverage = false
         }
         release {
             isMinifyEnabled = false
@@ -48,6 +50,34 @@ android {
 
 kotlin {
     jvmToolchain(17)
+}
+
+// Kover: cobertura para SonarCloud (sonar.kotlin.coverage.reportPaths apunta al XML total)
+kover {
+    reports {
+        filters {
+            excludes {
+                // Igual criterio que sonar.coverage.exclusions: clases generadas
+                classes(
+                    "*_Hilt*",
+                    "*Hilt_*",
+                    "*_Factory*",
+                    "*_MembersInjector*",
+                    "*_Provide*",
+                    "*_FactoryProvider*",
+                    "hilt_*",
+                )
+                // Recursos generados por AGP
+                classes("*R", "*.R$*", "*Manifest*")
+                // Clases anotadas por Hilt (inicializacion generada, no hay logica de negocio)
+                annotatedBy(
+                    "dagger.hilt.android.HiltAndroidApp",
+                    "dagger.hilt.android.AndroidEntryPoint",
+                    "dagger.hilt.android.lifecycle.HiltViewModel",
+                )
+            }
+        }
+    }
 }
 
 hilt {
