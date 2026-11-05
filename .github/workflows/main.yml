@@ -10,7 +10,7 @@ on:
       organization:
         description: "Organization Key"
         required: true
-        default: "xxrandr"
+        default: "oscarcantoral"
 
 permissions:
   contents: read
