@@ -1,0 +1,9 @@
+# Configuración de gitleaks para chemxr_api
+# Hereda todas las reglas default y agrega allowlists para falsos positivos.
+# Docs: https://github.com/gitleaks/gitleaks#configuration
+[extend]
+useDefault = true
+
+[allowlist]
+description = "CI: referencias interpoladas a secrets (${{ secrets.X }}) no contienen valores reales"
+paths = ['\.github/workflows/']
