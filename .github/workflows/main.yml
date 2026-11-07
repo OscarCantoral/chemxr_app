@@ -16,6 +16,21 @@ permissions:
   contents: read
 
 jobs:
+  gitleaks:
+    name: Secrets Scan (historial completo)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          # Historia completa: gitleaks detect escanea todos los commits
+          fetch-depth: 0
+
+      - name: Gitleaks
+        # Requiere que el tag contenga actions/qa-gitleaks (merge del PR + tag)
+        uses: DevSecOps-Engineer-Org/reusable-workflows/actions/qa-gitleaks@v1.0.0
+        with:
+          fail-on-error: "true"
+
   sonarcloud:
     name: Build and Analyze
     runs-on: ubuntu-latest
