@@ -82,7 +82,7 @@ jobs:
           fetch-depth: 0
 
       - name: Gitleaks
-        uses: DevSecOps-Engineer-Org/reusable-workflows/actions/qa-gitleaks@v1.0.2
+        uses: DevSecOps-Engineer-Org/reusable-workflows/actions/qa-gitleaks@38723254af5ddb07039e983ce699b693f7f7eacb # v1.0.2
         with:
           fail-on-error: "true"
 
@@ -100,7 +100,7 @@ jobs:
           path: .
 
       - name: Trivy FS Scan
-        uses: DevSecOps-Engineer-Org/reusable-workflows/actions/qa-trivy@v1.0.2
+        uses: DevSecOps-Engineer-Org/reusable-workflows/actions/qa-trivy@38723254af5ddb07039e983ce699b693f7f7eacb # v1.0.2
         with:
           scan-type: fs
           severity: CRITICAL,HIGH
@@ -123,7 +123,7 @@ jobs:
           path: .
 
       - name: SonarQube Scan
-        uses: DevSecOps-Engineer-Org/reusable-workflows/actions/qa-sonar@v1.0.2
+        uses: DevSecOps-Engineer-Org/reusable-workflows/actions/qa-sonar@38723254af5ddb07039e983ce699b693f7f7eacb # v1.0.2
         with:
           app-name: chemxr-app
           project-key: ${{ github.event.inputs.project_key }}
