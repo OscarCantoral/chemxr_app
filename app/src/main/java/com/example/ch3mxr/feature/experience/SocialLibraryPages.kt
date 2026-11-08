@@ -20,75 +20,18 @@ import com.example.ch3mxr.feature.main.components.*
 import com.example.ch3mxr.feature.profile.model.StudySpace
 
 @Composable
-fun LibraryPage(space: StudySpace, modifier:Modifier=Modifier, onOpen:(String)->Unit) {
-    var search by rememberSaveable { mutableStateOf("") }
-    var type by rememberSaveable { mutableStateOf("Todos") }
-    val context = LocalContext.current
-    MainPage(modifier) {
-        SpaceContextHeader(space, "Biblioteca ${if(space.academic) "institucional" else "abierta"}")
-        Heading("Investiga y consulta.")
-        DemoNavRow("Mi estante personal", "Favoritos, apuntes y colecciones", Icons.Outlined.Bookmarks) { onOpen("shelf") }
-        OutlinedTextField(value=search,onValueChange={search=it},label={Text("Buscar recursos, etiquetas o títulos")},modifier=Modifier.fillMaxWidth(),singleLine=true)
-        Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(6.dp)) {
-            listOf("Todos","Buscador","Repositorio","Base de datos").forEach { option ->
-                FilterChip(selected=type==option,onClick={type=option},label={Text(option,style=MaterialTheme.typography.labelSmall)},shape=com.example.ch3mxr.core.ui.theme.ChemShapes.Component)
-            }
-        }
-        ChemDemoData.library.filter { (type=="Todos" || it.category==type) && (search.isBlank() || (it.title+it.tags+it.description).contains(search,true)) }.forEach { item ->
-            GroupPanel(item.title,"${item.category} · ${item.tags}") {
-                Text(item.description,style=MaterialTheme.typography.bodySmall)
-                Spacer(Modifier.height(10.dp))
-                Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-                    ChemButton("Abrir sitio", {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.url)))
-                    },Modifier.weight(1f))
-                    ChemButton(if(item.title in DemoInteractions.savedItems) "Guardado" else "Guardar", {
-                        if(item.title in DemoInteractions.savedItems) DemoInteractions.savedItems.remove(item.title)
-                        else DemoInteractions.savedItems.add(item.title)
-                    },Modifier.weight(1f),style=ChemButtonStyle.OUTLINED)
-                }
-            }
-        }
-        GroupPanel("Aportar enlace", "En una versión conectada, cada recurso será moderado y deberá respetar licencias de uso") {
-            DemoNavRow("Proponer nuevo recurso", "Compartir un enlace legal al catálogo", Icons.Outlined.AddLink) { onOpen("submitResource") }
-        }
-    }
+fun LibraryPage(space:StudySpace,modifier:Modifier=Modifier,onOpen:(String)->Unit) {
+    com.example.ch3mxr.feature.library.catalog.ResourceLibraryPage(space,modifier,onOpen)
 }
 
 @Composable
 fun ShelfPage(modifier:Modifier=Modifier,onOpen:(String)->Unit) {
-    MainPage(modifier) {
-        Eyebrow("Colección personal")
-        Heading("Mi estante.")
-        DemoNavRow("Mis apuntes", "Notas de texto y referencias", Icons.Outlined.EditNote) {onOpen("notes")}
-        SectionHeading("Enlaces guardados")
-        if(DemoInteractions.savedItems.isEmpty()) Text("Guarda recursos desde la Biblioteca del espacio para encontrarlos aquí.")
-        DemoInteractions.savedItems.toList().forEach { name ->
-            GroupPanel(name,"Colección · Favoritos") {
-                ChemButton("Quitar de guardados",{DemoInteractions.savedItems.remove(name)},Modifier.fillMaxWidth(),style=ChemButtonStyle.OUTLINED)
-            }
-        }
-        SectionHeading("Cursos guardados")
-        DemoNavRow("Química básica", "Curso de ejemplo",Icons.Outlined.MenuBook) {onOpen("course")}
-    }
+    com.example.ch3mxr.feature.library.catalog.PersonalShelfPage(modifier,onOpen)
 }
 
 @Composable
-fun SubmitResourcePage(modifier:Modifier=Modifier) {
-    var title by rememberSaveable { mutableStateOf("") }
-    var link by rememberSaveable { mutableStateOf("") }
-    var sent by rememberSaveable { mutableStateOf(false) }
-    MainPage(modifier) {
-        Eyebrow("Biblioteca colaborativa")
-        Heading("Comparte una referencia.")
-        GroupPanel("Propuesta de enlace", "El enlace se revisará antes de figurar en un catálogo real") {
-            OutlinedTextField(value=title,onValueChange={title=it;sent=false},label={Text("Título")},modifier=Modifier.fillMaxWidth())
-            OutlinedTextField(value=link,onValueChange={link=it;sent=false},label={Text("URL de origen")},modifier=Modifier.fillMaxWidth())
-            ChemButton("Enviar propuesta DEMO",{if(title.isNotBlank() && link.startsWith("https://")) sent=true},Modifier.fillMaxWidth())
-            if(sent) DemoBadge("Propuesta simulada · sin envío a servidor")
-            Text("No subas libros protegidos sin autorización. Comparte enlaces legítimos y respeta las licencias.",style=MaterialTheme.typography.labelSmall)
-        }
-    }
+fun SubmitResourcePage(space:StudySpace,modifier:Modifier=Modifier,onOpen:(String)->Unit) {
+    com.example.ch3mxr.feature.library.catalog.RegisterResourcePage(space,modifier,onOpen)
 }
 
 @Composable
@@ -135,37 +78,7 @@ fun CommunitiesPage(space:StudySpace,modifier:Modifier=Modifier,onOpen:(String)-
 
 @Composable
 fun CommunityDetailPage(space:StudySpace,modifier:Modifier=Modifier,onOpen:(String)->Unit) {
-    var newPost by rememberSaveable { mutableStateOf("") }
-    var posted by rememberSaveable { mutableStateOf("") }
-    val liked=DemoInteractions.likedPosts
-    MainPage(modifier) {
-        Eyebrow("Comunidad · DEMO")
-        Heading(if(space.academic) "Comunidad ${space.name}." else "Curiosos por la ciencia.")
-        GroupPanel("Información de la comunidad", "Pública · 342 miembros · 3 moderadores") {
-            SimpleInfo("Regla", "Respeto y fuentes verificables")
-            SimpleInfo("Bots", "Identificados como automatizados")
-            SimpleInfo("Privacidad", "Pública")
-        }
-        GroupPanel("Publicar", "Comparte un tema, material, imagen o enlace") {
-            OutlinedTextField(newPost,{newPost=it},label={Text("¿Qué quieres compartir?")},modifier=Modifier.fillMaxWidth(),minLines=3)
-            ChemButton("Publicar en DEMO", {if(newPost.isNotBlank()){posted=newPost;newPost=""}},Modifier.fillMaxWidth())
-        }
-        if(posted.isNotBlank()) GroupPanel("Tú · Ahora", "Publicación creada solo en el prototipo") { Text(posted) }
-        GroupPanel("Lucía Torres", "Hace 2 horas · Post académico") {
-            Text("¿Qué sensores usarían para un robot que detecta obstáculos?")
-            Spacer(Modifier.height(8.dp))
-            Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-                ChemButton(if("post1" in liked) "Te gusta" else "Me gusta",{
-                    if("post1" in liked) liked.remove("post1") else liked.add("post1")
-                },Modifier.weight(1f),style=ChemButtonStyle.OUTLINED)
-                ChemButton("Denunciar",{DemoInteractions.reports.add("Post de demostración")},Modifier.weight(1f),style=ChemButtonStyle.OUTLINED)
-            }
-        }
-        GroupPanel("Bot de bienvenida · Automatizado", "Mensaje identificado como generado por el sistema") {
-            Text("Bienvenidos. Recuerden citar sus fuentes y consultar las reglas de esta comunidad.")
-        }
-        DemoNavRow("Ver canales de difusión", "Solo autores autorizados publican", Icons.Outlined.Campaign) {onOpen("channels")}
-    }
+    com.example.ch3mxr.feature.community.CommunityFeedScreen(space,modifier,onOpen)
 }
 
 @Composable
@@ -218,18 +131,16 @@ fun MessagesPage(modifier:Modifier=Modifier) {
 fun ForumPage(modifier:Modifier=Modifier) {
     var answer by rememberSaveable { mutableStateOf("") }
     var posted by rememberSaveable { mutableStateOf("") }
-    val votes=DemoInteractions.votedQuestions
     MainPage(modifier) {
         Eyebrow("Foro exclusivo del curso")
         Heading("Preguntas y debates.")
         GroupPanel("¿Cuándo utilizar OSPF?", "Pregunta académica · 3 respuestas") {
             Text("Respuesta aceptada (DEMO): cuando se necesita un protocolo dinámico de enrutamiento interno.")
             Spacer(Modifier.height(10.dp))
-            ChemButton(if("ospf" in votes) "Voto registrado" else "Votar respuesta útil", {
-                if("ospf" !in votes) votes.add("ospf") else votes.remove("ospf")
-            },Modifier.fillMaxWidth(),style=ChemButtonStyle.OUTLINED)
+            com.example.ch3mxr.feature.community.VoteControls("forum:ospf",8)
+
         }
-        GroupPanel("Participa en el debate", "Las respuestas son diferentes de las reacciones sociales") {
+        GroupPanel("Participa en el debate", "Comparte una explicación con fuentes") {
             OutlinedTextField(answer,{answer=it},label={Text("Tu respuesta")},minLines=3,modifier=Modifier.fillMaxWidth())
             ChemButton("Responder DEMO",{if(answer.isNotBlank()){posted=answer;answer=""}},Modifier.fillMaxWidth())
             if(posted.isNotBlank()) DemoBadge("Respuesta de prueba: $posted")

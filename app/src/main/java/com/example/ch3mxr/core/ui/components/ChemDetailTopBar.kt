@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.ch3mxr.core.ui.theme.ChemDimens
 
-/** Cabecera compartida de Perfil, Configuración y otras pantallas detalladas. SIN Tutor IA. */
+/** Cabecera compartida. El tutor opcional respeta el plan de la cuenta. */
 @Composable
 fun ChemDetailTopBar(
     title: String,
@@ -25,7 +25,8 @@ fun ChemDetailTopBar(
     actionIcon: ImageVector? = null,
     actionDescription: String = "Acción",
     onAction: () -> Unit = {},
-    onTitleClick: (() -> Unit)? = null
+    onTitleClick: (() -> Unit)? = null,
+    onAiClick: (() -> Unit)? = null
 ) {
     val colors = MaterialTheme.colorScheme
     Column(Modifier.fillMaxWidth().background(colors.background).statusBarsPadding()) {
@@ -56,6 +57,7 @@ fun ChemDetailTopBar(
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
+            if (onAiClick != null) ChemAiButton(onClick=onAiClick)
             if (actionIcon != null) {
                 ChemIconAction(actionIcon, actionDescription, onAction, tint = colors.onBackground)
             }

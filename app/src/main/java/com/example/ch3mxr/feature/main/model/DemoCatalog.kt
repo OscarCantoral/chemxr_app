@@ -19,7 +19,17 @@ data class DemoCourse(
     val icon: ImageVector,
     val tileColor: Color,
     val iconColor: Color,
-    val isPrivate: Boolean = false
+    val isPrivate: Boolean = false,
+    val id: String = "",
+    val owner: com.example.ch3mxr.feature.learning.CourseOwner = com.example.ch3mxr.feature.learning.CourseOwner.TEACHER,
+    val access: com.example.ch3mxr.feature.learning.CourseAccess = com.example.ch3mxr.feature.learning.CourseAccess.FREE,
+    val instructor: String = "",
+    val priceCents: Int = 0,
+    val level: String = "Básico",
+    val duration: String = "4 h",
+    val lessons: Int = 20,
+    val rating: Float = 4.7f,
+    val ratingsCount: Int = 128
 )
 
 // Datos FIJOS del mockup. No se almacenan, no usan API ni base de datos.

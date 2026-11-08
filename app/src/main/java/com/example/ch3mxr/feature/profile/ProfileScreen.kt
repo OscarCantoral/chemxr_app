@@ -22,6 +22,7 @@ fun ProfileScreen(
     onMockAction:(String)->Unit,
     activePeriod:String="",onPeriodChange:(String)->Unit={},onOpen:(String)->Unit={}
 ) {
+    val learning=com.example.ch3mxr.feature.learning.LocalLearningStore.current
     val c=MaterialTheme.colorScheme
     var periodMenu by remember {mutableStateOf(false)}
     MainPage(modifier) {
@@ -53,19 +54,20 @@ fun ProfileScreen(
                 }
             }
             ChemMenuGroup {
-                ChemMenuRow(Icons.Outlined.Badge,"Carnet virtual","Identificación académica",{onOpen("studentCard")})
+                ChemMenuRow(Icons.Outlined.Badge,"Carnet digital","Identificación académica",{onOpen("studentCard")})
                 ChemMenuRow(Icons.Outlined.AccountBalance,"Cuenta corriente","Pagos, cuotas y comprobantes",{onOpen("finance")},showDivider=false)
             }
         }
         Eyebrow("Mi aprendizaje · ${activeSpace.name}")
         ChemMenuGroup {
             ChemMenuRow(Icons.Outlined.EmojiEvents,"Logros","Insignias y certificaciones",{onOpen("achievements")})
-            ChemMenuRow(Icons.Outlined.Bookmarks,"Mi estante","Lecturas, favoritos y apuntes",{onOpen("shelf")})
+            ChemMenuRow(Icons.Outlined.LocalLibrary,"Biblioteca del espacio","Archivos, enlaces y recursos compartidos",{onOpen("library")})
+            ChemMenuRow(Icons.Outlined.Bookmarks,"Mi estante","Accesos directos a tus favoritos",{onOpen("shelf")})
             ChemMenuRow(Icons.Outlined.Forum,"Mis consultas","Mensajes académicos",{onOpen("messages")},showDivider=false)
         }
         if(!activeSpace.academic) {
             GroupPanel("Mi plan ChemXR", "Beneficios de tu espacio personal") {
-                Text("Gratuito",fontSize=25.sp,fontWeight=FontWeight.Bold)
+                Text(if(learning.isPro) "PRO" else "Gratuito",fontSize=25.sp,fontWeight=FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 ChemButton("Ver plan",{onOpen("membership")},Modifier.fillMaxWidth(),style=ChemButtonStyle.OUTLINED)
             }

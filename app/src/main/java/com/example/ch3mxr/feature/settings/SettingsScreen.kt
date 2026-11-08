@@ -90,7 +90,7 @@ fun SettingsScreen(
                 email = it; prefs.edit().putBoolean("email_digest", it).apply()
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .22f))
-            ChemDemoToggleRow("Recordatorios del Tutor IA", "Avisos sobre pendientes de estudio", aiReminder) {
+            if(com.example.ch3mxr.feature.learning.LocalLearningStore.current.tutorAvailable) ChemDemoToggleRow("Recordatorios del Tutor IA", "Avisos sobre pendientes de estudio", aiReminder) {
                 aiReminder = it; prefs.edit().putBoolean("ai_reminders", it).apply()
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .22f))

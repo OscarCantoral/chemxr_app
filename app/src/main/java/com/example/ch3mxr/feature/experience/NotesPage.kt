@@ -52,7 +52,7 @@ fun NotesPage(modifier:Modifier=Modifier) {
         }
     }
     MainPage(modifier) {
-        Eyebrow("Estante · Apuntes privados")
+        Eyebrow("Mis apuntes · Privados")
         Heading("Mis apuntes.")
         GroupPanel("Crear nota", "Guardada en este dispositivo; la sincronización con API vendrá después") {
             OutlinedTextField(draft,{draft=it},label={Text("Texto, referencias y enlaces")},modifier=Modifier.fillMaxWidth(),minLines=4)

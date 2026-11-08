@@ -13,6 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.example.ch3mxr.core.ui.components.ChemIconAction
 import com.example.ch3mxr.core.ui.components.ChemMenuGroup
@@ -32,6 +36,9 @@ fun SearchScreen(
     onResultClick: (String) -> Unit
 ) {
     var query by rememberSaveable(searchContext) { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
     val entries = remember(searchContext) {
         val courses = DemoCatalog.explore + DemoCatalog.maths
         val sample = courses.map { SearchDemoItem(it.title, "${it.area} · ${it.subtitle}") }
@@ -52,20 +59,22 @@ fun SearchScreen(
             || it.subtitle.contains(query.trim(), ignoreCase = true) }
     }
     val colors = MaterialTheme.colorScheme
-    Column(modifier.fillMaxSize().background(colors.background)) {
+    Column(modifier.fillMaxSize().background(colors.background).navigationBarsPadding().imePadding()) {
         Row(modifier = Modifier.fillMaxWidth().statusBarsPadding()
             .height(ChemDimens.DetailTopBarHeight).padding(horizontal = 6.dp),
             verticalAlignment = Alignment.CenterVertically) {
             ChemIconAction(Icons.Outlined.ArrowBack, "Volver", onBack)
             OutlinedTextField(
                 value = query, onValueChange = { query = it },
-                modifier = Modifier.weight(1f).height(ChemDimens.SearchInputHeight),
+                modifier = Modifier.weight(1f).height(ChemDimens.SearchInputHeight)
+                    .focusRequester(focusRequester),
                 placeholder = { Text("Buscar en $searchContext", style = MaterialTheme.typography.bodySmall) },
                 singleLine = true,
                 leadingIcon = { Icon(Icons.Outlined.Search, null) },
                 trailingIcon = { if (query.isNotBlank()) ChemIconAction(Icons.Outlined.Close, "Limpiar", { query = "" }) },
                 shape = ChemShapes.Component,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
                 textStyle = MaterialTheme.typography.bodyMedium
             )
             Spacer(Modifier.width(9.dp))

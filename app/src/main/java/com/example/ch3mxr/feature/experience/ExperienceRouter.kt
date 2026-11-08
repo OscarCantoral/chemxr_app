@@ -25,7 +25,7 @@ private val pageTitles = mapOf(
     "communities" to "Comunidad", "communityList" to "Comunidades", "communityDetail" to "Publicaciones",
     "channels" to "Canales", "messages" to "Mensajes", "forum" to "Foro del curso", "teacher" to "Docente",
     "reviews" to "Reseñas", "achievements" to "Logros", "jobs" to "Bolsa de trabajo", "support" to "Soporte",
-"studentCard" to "Carnet virtual", "membership" to "Mi membresía", "personalData" to "Datos personales", "privacy" to "Privacidad", "security" to "Seguridad", "adVideo" to "Publicidad · DEMO"
+"studentCard" to "Carnet digital", "membership" to "Mi membresía", "personalData" to "Datos personales", "privacy" to "Privacidad", "security" to "Seguridad", "adVideo" to "Publicidad · DEMO"
 )
 fun experienceTitle(route: String): String = pageTitles[route] ?: "ChemXR"
 
@@ -56,20 +56,20 @@ fun ExperiencePageScreen(route:String,space:StudySpace,period:String, modifier:M
         "library" -> LibraryPage(space,modifier,onOpen)
         "shelf" -> ShelfPage(modifier,onOpen)
         "notes" -> NotesPage(modifier)
-        "submitResource" -> SubmitResourcePage(modifier)
+        "submitResource" -> SubmitResourcePage(space,modifier,onOpen)
         "communities" -> CommunityHubPage(space,modifier,onOpen)
         "communityList" -> CommunitiesPage(space,modifier,onOpen)
         "communityDetail" -> CommunityDetailPage(space,modifier,onOpen)
         "channels" -> ChannelsPage(space,modifier)
         "messages" -> MessagesPage(modifier)
-        "forum" -> ForumPage(modifier)
+        "forum" -> CommunityDetailPage(space,modifier,onOpen)
         "teacher" -> TeacherPage(modifier,onOpen)
         "reviews" -> ReviewsPage(modifier)
         "achievements" -> AchievementsPage(modifier)
         "privacy" -> GenericMockPage("Privacidad", "Controles de visibilidad y uso de datos", listOf("Quién puede ver mi perfil", "Bloqueos y denuncias", "Consentimientos"),modifier)
         "security" -> GenericMockPage("Seguridad", "Accesos e identidad", listOf("Dispositivos", "Contraseña", "Sesiones activas"),modifier)
         "studentCard" -> StudentCardPage(space,period,modifier)
-        "membership" -> MembershipPage(space,modifier)
+        "membership" -> com.example.ch3mxr.feature.learning.StudentPlanPage(modifier)
         "personalData" -> PersonalDataPage(modifier)
         "adVideo" -> SponsoredVideoPage(modifier)
         "jobs" -> GenericMockPage("Bolsa de trabajo", "Ofertas, prácticas, convenios y postulaciones", listOf("Prácticas profesionales", "Convocatorias", "Mis postulaciones"),modifier)
@@ -86,37 +86,6 @@ private fun GenericMockPage(title:String, subtitle:String,items:List<String>,mod
         Text(subtitle,color=MaterialTheme.colorScheme.onSurfaceVariant)
         MockNote()
         items.forEach { DemoNavRow(it,"Pendiente de integración con ChemXR API") {} }
-    }
-}
-
-@Composable
-private fun StudentCardPage(space:StudySpace,period:String,modifier:Modifier) {
-    MainPage(modifier) {
-        SpaceContextHeader(space,"Carnet institucional · Solo maqueta")
-        Heading("Carnet virtual.")
-        GroupPanel("Credencial digital · DEMO", "No constituye un documento de identidad válido") {
-            SimpleInfo("Estudiante","Oscar Cantoral (DEMO)")
-            SimpleInfo("Código",space.studentCode)
-            SimpleInfo("Programa",space.program)
-            SimpleInfo("Sede",space.campus)
-            SimpleInfo("Periodo",period)
-            DemoBadge("CARNET DE DEMOSTRACIÓN")
-            Text("El QR institucional válido se implementará con el backend y autorización correspondiente.")
-        }
-    }
-}
-
-@Composable
-private fun MembershipPage(space:StudySpace,modifier:Modifier) {
-    MainPage(modifier) {
-        Eyebrow("Planes y accesos")
-        Heading("Mis membresías.")
-        GroupPanel("Mi espacio · Plan gratuito", "Plan de ChemXR") {
-            SimpleInfo("Estado","Activo · DEMO")
-            SimpleInfo("Beneficios", "Sujetos a definición de los planes")
-            DemoBadge("Gratuito")
-        }
-        Text("La membresía de ChemXR y la matrícula de una institución son independientes.")
     }
 }
 
@@ -190,6 +159,7 @@ private fun LocationChoice(title:String,value:String,options:List<String>,onSele
 
 @Composable
 private fun SponsoredVideoPage(modifier:Modifier=Modifier) {
+    if(com.example.ch3mxr.feature.learning.LocalLearningStore.current.isPro) return
     MainPage(modifier) {
         Eyebrow("Publicidad patrocinada · Maqueta")
         Heading("Anuncio de video.")

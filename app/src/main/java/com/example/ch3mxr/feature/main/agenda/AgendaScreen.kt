@@ -26,6 +26,8 @@ import com.example.ch3mxr.core.ui.components.ChemButtonStyle
 import com.example.ch3mxr.feature.experience.*
 import com.example.ch3mxr.feature.main.components.*
 import com.example.ch3mxr.feature.profile.model.*
+import com.example.ch3mxr.feature.ads.AgendaAdDialog
+import com.example.ch3mxr.feature.learning.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -39,7 +41,7 @@ import org.json.JSONObject
 private data class AgendaEntry(
     val ownerId:String,val title:String,val type:String,
     val start:LocalDateTime,val end:LocalDateTime,val allDay:Boolean=false,
-    val course:String=""
+    val course:String="",val shared:Boolean=false
 )
 
 private fun demoAgenda():List<AgendaEntry> {
@@ -81,8 +83,10 @@ private fun saveAgenda(context:Context, entries:List<AgendaEntry>) {
 @Composable
 fun AgendaScreen(
     modifier:Modifier=Modifier,space:StudySpace=DemoStudySpaces.available.first(),
-    includeOther:Set<String> = emptySet(),onIncludeOtherChange:(String,Boolean)->Unit={_,_->}
+    includeOther:Set<String> = emptySet(),onIncludeOtherChange:(String,Boolean)->Unit={_,_->},
+    allowCompletionAd:Boolean=false,onCompletionAdShown:()->Unit={},onOpen:(String)->Unit={}
 ) {
+    val learning=LocalLearningStore.current
     val context=LocalContext.current
     val today=remember {LocalDate.now()}
     var date by rememberSaveable(space.id) {mutableStateOf(today.toString())}
@@ -91,9 +95,18 @@ fun AgendaScreen(
     var filter by rememberSaveable {mutableStateOf("Todos")}
     var showSources by rememberSaveable {mutableStateOf(false)}
     var create by rememberSaveable {mutableStateOf(false)}
+    // No restaurar una pantalla publicitaria pendiente después de recrear la Activity.
+    var showAgendaAd by remember(space.id) {mutableStateOf(false)}
     var entries by remember {mutableStateOf(readAgenda(context))}
     val allowed=if(space.academic) setOf(space.id) else setOf("personal")+includeOther
-    val all=(remember {demoAgenda()}+entries).filter {it.ownerId in allowed}
+    val classroomEntries=learning.classEvents.mapNotNull {event->
+        val course=ClassroomCatalog.find(event.courseId)?.takeIf {it.spaceId==event.spaceId && it.sectionId==event.sectionId}
+        if(course==null) null else runCatching {
+            AgendaEntry(event.spaceId,event.title,event.type,LocalDateTime.parse(event.start),LocalDateTime.parse(event.end),
+                course="${course.title} · ${course.sectionName}",shared=true)
+        }.getOrNull()
+    }
+    val all=(remember {demoAgenda()}+entries+classroomEntries).filter {it.ownerId in allowed}
     fun overlaps(item:AgendaEntry,day:LocalDate):Boolean =
         !day.isBefore(item.start.toLocalDate()) && !day.isAfter(item.end.toLocalDate())
     val visible=all.filter {overlaps(it,selected) && (filter=="Todos" || it.type==filter)}
@@ -105,7 +118,9 @@ fun AgendaScreen(
         item {
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
                 Heading("Tu agenda.",29)
-                IconButton(onClick={create=true}) {Icon(Icons.Outlined.AddCircleOutline,"Agregar actividad",tint=MaterialTheme.colorScheme.primary)}
+                IconButton(onClick={create=true}) {
+                    Icon(Icons.Outlined.AddCircleOutline,"Agregar actividad",tint=MaterialTheme.colorScheme.primary)
+                }
             }
         }
         item {
@@ -146,6 +161,11 @@ fun AgendaScreen(
                 }
             }
         }
+        if(space.academic) {
+            item {DemoNavRow("Eventos y apuntes del salón","Publicaciones del docente o delegado para tu clase",Icons.Outlined.Groups) {
+                onOpen("classroom/${ClassroomCatalog.forSpace(space.id).firstOrNull()?.id.orEmpty()}")
+            }}
+        }
         if(!space.academic) {
             item {DemoNavRow("Calendarios visibles","Incluir fechas de UTP o Senati únicamente en Mi espacio",Icons.Outlined.FilterList) {showSources=!showSources}}
             if(showSources) item {
@@ -176,8 +196,15 @@ fun AgendaScreen(
             Icon(Icons.Outlined.EditCalendar,null);Spacer(Modifier.width(8.dp));Text("Registrar actividad del sílabo")
         }}
     }
-    if(create) AddAgendaDialog(space.id,selected,onDismiss={create=false},onSave={entry ->
+    if(showAgendaAd && learning.adsAllowed(space.id)) AgendaAdDialog(onClose={showAgendaAd=false})
+    if(create && !showAgendaAd) AddAgendaDialog(space.id,selected,onDismiss={create=false},onSave={entry ->
         entries=entries+entry;saveAgenda(context,entries);date=entry.start.toLocalDate().toString();create=false
+        // La tarea ya terminó. Al integrar el SDK: mostrar SOLO si está precargado;
+        // si no está listo, continuar sin esperarlo ni mostrarlo tardíamente.
+        if(learning.adsAllowed(space.id) && allowCompletionAd) {
+            onCompletionAdShown()
+            showAgendaAd=true
+        }
     })
 }
 
@@ -193,6 +220,7 @@ private fun AgendaCard(entry:AgendaEntry,clocked:Boolean) {
             Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(3.dp)) {
                 Text(entry.title,fontWeight=FontWeight.Bold,maxLines=2,overflow=TextOverflow.Ellipsis)
                 Text("$time · ${entry.type}",style=MaterialTheme.typography.bodySmall)
+                if(entry.shared) Text("Compartido con todo el salón",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.primary)
                 Text(listOf(owner.name,entry.course).filter {it.isNotBlank()}.joinToString(" · "),
                     style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
             }

@@ -47,7 +47,6 @@ object DemoInteractions {
     val selectedEnrollments = mutableStateListOf<String>()
     val deliveries = mutableStateListOf<String>()
     val bookedResources = mutableStateListOf<String>()
-    val likedPosts = mutableStateListOf<String>()
     val reports = mutableStateListOf<String>()
     val votedQuestions = mutableStateListOf<String>()
 }

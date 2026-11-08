@@ -20,7 +20,7 @@ object ChemDimens {
     val TopBarHeight = 50.dp     // SOLO la barra, sin incluir la barra de estado Android
     val TopBarSearchHeight = 32.dp
     val TopBarAvatarSize = 32.dp
-    val TopBarActionSize = 30.dp
+    val TopBarActionSize = 48.dp // Área táctil; el dibujo del icono mantiene su tamaño.
     val TopBarAiLogoSize = 28.dp  // Tamaño visual del logo de IA, independiente del área táctil
     val TopBarHorizontalPadding = 12.dp
     val BottomBarHeight = 58.dp

@@ -27,18 +27,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ch3mxr.feature.main.components.*
 import com.example.ch3mxr.feature.main.model.DemoCatalog
+import com.example.ch3mxr.feature.main.model.DemoCourse
+import com.example.ch3mxr.feature.ads.NativeAdPlacement
+import com.example.ch3mxr.feature.ads.NativeAdSlot
 
 @Composable
 fun CoursesScreen(
     modifier: Modifier = Modifier,
     space: StudySpace = DemoStudySpaces.available.first(),
+    purchasedCourses: List<DemoCourse> = emptyList(),
     onOpen:(String)->Unit = {}
 ) {
+    if(!space.academic) {
+        com.example.ch3mxr.feature.learning.PersonalCoursesPage(modifier,onOpen)
+        return
+    }
     var section by rememberSaveable(space.id) { mutableStateOf(if(space.academic) "Mis asignaturas" else "Mis aulas y cursos") }
     var status by rememberSaveable { mutableStateOf("Todos") }
     val initial = if (space.academic) {
         if(space.id == "utp") DemoCatalog.utpCourses else DemoCatalog.senatiCourses
-    } else if (section == "Catálogo abierto") DemoCatalog.explore else DemoCatalog.myCourses
+    } else if (section == "Catálogo abierto") DemoCatalog.explore
+        else (DemoCatalog.myCourses + purchasedCourses).distinctBy {it.title}
     val filtered = when (status) {
         "En curso" -> initial.filter { it.progress > 0f && it.progress < 1f }
         "Completados" -> initial.filter { it.progress >= 1f }
@@ -89,8 +98,8 @@ fun CoursesScreen(
         if(space.academic) {
             item { DemoNavRow("Récord y progreso académico", "Malla, créditos, notas y asistencia",Icons.Outlined.Assessment) {onOpen("record")} }
         }
-        if(!space.academic) item {
-            DemoNavRow("Patrocinado · Taller de ciencias", "Publicidad de ejemplo · Abrir video",Icons.Outlined.SmartDisplay) {onOpen("adVideo")}
+        if(space.id=="personal") item {
+            NativeAdSlot(NativeAdPlacement.COURSES)
         }
         if (filtered.isEmpty()) {
             item {
@@ -101,7 +110,10 @@ fun CoursesScreen(
                 }
             }
         } else {
-            items(filtered, key = { it.title }) { course -> CourseCard(course,Modifier.clickable {onOpen("course")}) }
+            items(filtered, key = { it.title }) { course -> CourseCard(course,Modifier.clickable {
+                val found=com.example.ch3mxr.feature.learning.ClassroomCatalog.forSpace(space.id).firstOrNull {it.title==course.title}
+                onOpen("institutionCourse/${found?.id.orEmpty()}")
+            }) }
         }
     }
 }
