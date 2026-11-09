@@ -1,171 +1,319 @@
 package com.example.ch3mxr.feature.experience
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
-import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.ch3mxr.core.model.*
 import com.example.ch3mxr.core.ui.components.ChemButton
 import com.example.ch3mxr.feature.main.components.*
 import com.example.ch3mxr.feature.profile.model.StudySpace
 
-private val pageTitles = mapOf(
-    "enrollment" to "Matrícula", "record" to "Mi progreso", "grades" to "Notas", "attendance" to "Asistencias",
-    "finance" to "Cuenta corriente", "documents" to "Documentos oficiales", "procedures" to "Trámites",
-    "services" to "Servicios", "sessions" to "Sesiones", "surveys" to "Encuestas",
-    "course" to "Tu curso", "modules" to "Contenido", "syllabus" to "Sílabo", "labs" to "Laboratorios",
-    "assignments" to "Evaluaciones", "rubric" to "Rúbrica", "team" to "Mi equipo", "quiz" to "Examen",
-    "simulation" to "Simulador", "interactive" to "Interactivo 2D", "model3d" to "Visor 3D",
-    "library" to "Biblioteca", "shelf" to "Mi estante", "notes" to "Apuntes", "submitResource" to "Compartir recurso",
-    "communities" to "Comunidad", "communityList" to "Comunidades", "communityDetail" to "Publicaciones",
-    "channels" to "Canales", "messages" to "Mensajes", "forum" to "Foro del curso", "teacher" to "Docente",
-    "reviews" to "Reseñas", "achievements" to "Logros", "jobs" to "Bolsa de trabajo", "support" to "Soporte",
-"studentCard" to "Carnet digital", "membership" to "Mi membresía", "personalData" to "Datos personales", "privacy" to "Privacidad", "security" to "Seguridad", "adVideo" to "Publicidad · DEMO"
-)
+private val pageTitles =
+  mapOf(
+    "enrollment" to "Matrícula",
+    "record" to "Mi progreso",
+    "grades" to "Notas",
+    "attendance" to "Asistencias",
+    "finance" to "Cuenta corriente",
+    "documents" to "Documentos oficiales",
+    "procedures" to "Trámites",
+    "services" to "Servicios",
+    "sessions" to "Sesiones",
+    "surveys" to "Encuestas",
+    "course" to "Tu curso",
+    "modules" to "Contenido",
+    "syllabus" to "Sílabo",
+    "labs" to "Laboratorios",
+    "assignments" to "Evaluaciones",
+    "rubric" to "Rúbrica",
+    "team" to "Mi equipo",
+    "quiz" to "Examen",
+    "simulation" to "Simulador",
+    "interactive" to "Interactivo 2D",
+    "model3d" to "Visor 3D",
+    "library" to "Biblioteca",
+    "shelf" to "Mi estante",
+    "notes" to "Apuntes",
+    "submitResource" to "Compartir recurso",
+    "communities" to "Comunidad",
+    "communityList" to "Comunidades",
+    "communityDetail" to "Publicaciones",
+    "channels" to "Canales",
+    "messages" to "Mensajes",
+    "forum" to "Foro del curso",
+    "teacher" to "Docente",
+    "reviews" to "Reseñas",
+    "achievements" to "Logros",
+    "jobs" to "Bolsa de trabajo",
+    "support" to "Soporte",
+    "studentCard" to "Carnet digital",
+    "membership" to "Mi membresía",
+    "personalData" to "Datos personales",
+    "privacy" to "Privacidad",
+    "security" to "Seguridad",
+    "adVideo" to "Publicidad · DEMO",
+  )
+
 fun experienceTitle(route: String): String = pageTitles[route] ?: "ChemXR"
 
 @Composable
-fun ExperiencePageScreen(route:String,space:StudySpace,period:String, modifier:Modifier=Modifier,onOpen:(String)->Unit) {
-    when(route) {
-        "enrollment" -> EnrollmentPage(space,period,modifier,onOpen)
-        "record" -> RecordPage(space,modifier,onOpen)
-        "grades" -> GradesPage(modifier)
-        "attendance" -> AttendancePage(modifier)
-        "finance" -> FinancePage(modifier)
-        "documents" -> DocumentsPage(space,modifier)
-        "procedures" -> ProceduresPage(modifier)
-        "services" -> ServicesPage(modifier)
-        "sessions" -> SessionsPage(space,modifier)
-        "surveys" -> SurveysPage(modifier)
-        "course" -> CourseOverviewPage(space,modifier,onOpen)
-        "modules" -> ModulesPage(space,modifier,onOpen)
-        "syllabus" -> SyllabusPage(space,modifier)
-        "labs" -> LabsPage(modifier,onOpen)
-        "assignments" -> AssignmentPage(modifier,onOpen)
-        "rubric" -> RubricPage(modifier)
-        "team" -> TeamPage(modifier,onOpen)
-        "quiz" -> QuizPage(modifier)
-        "simulation" -> SimulationPage(modifier)
-        "interactive" -> InteractivePage(modifier)
-        "model3d" -> Model3DPage(modifier)
-        "library" -> LibraryPage(space,modifier,onOpen)
-        "shelf" -> ShelfPage(modifier,onOpen)
-        "notes" -> NotesPage(modifier)
-        "submitResource" -> SubmitResourcePage(space,modifier,onOpen)
-        "communities" -> CommunityHubPage(space,modifier,onOpen)
-        "communityList" -> CommunitiesPage(space,modifier,onOpen)
-        "communityDetail" -> CommunityDetailPage(space,modifier,onOpen)
-        "channels" -> ChannelsPage(space,modifier)
-        "messages" -> MessagesPage(modifier)
-        "forum" -> CommunityDetailPage(space,modifier,onOpen)
-        "teacher" -> TeacherPage(modifier,onOpen)
-        "reviews" -> ReviewsPage(modifier)
-        "achievements" -> AchievementsPage(modifier)
-        "privacy" -> GenericMockPage("Privacidad", "Controles de visibilidad y uso de datos", listOf("Quién puede ver mi perfil", "Bloqueos y denuncias", "Consentimientos"),modifier)
-        "security" -> GenericMockPage("Seguridad", "Accesos e identidad", listOf("Dispositivos", "Contraseña", "Sesiones activas"),modifier)
-        "studentCard" -> StudentCardPage(space,period,modifier)
-        "membership" -> com.example.ch3mxr.feature.learning.StudentPlanPage(modifier)
-        "personalData" -> PersonalDataPage(modifier)
-        "adVideo" -> SponsoredVideoPage(modifier)
-        "jobs" -> GenericMockPage("Bolsa de trabajo", "Ofertas, prácticas, convenios y postulaciones", listOf("Prácticas profesionales", "Convocatorias", "Mis postulaciones"),modifier)
-        "support" -> GenericMockPage("Soporte institucional", "Tickets, incidencias y solicitudes de ayuda", listOf("Nuevo ticket", "Mis solicitudes", "Centro de ayuda"),modifier)
-        else -> GenericMockPage("ChemXR", "Pantalla de demostración", listOf("Sin contenido asignado"),modifier)
-    }
+fun ExperiencePageScreen(
+  route: String,
+  space: StudySpace,
+  period: String,
+  modifier: Modifier = Modifier,
+  onOpen: (String) -> Unit,
+) {
+  when (route) {
+    "enrollment" -> EnrollmentPage(space, period, modifier, onOpen)
+    "record" -> RecordPage(space, modifier, onOpen)
+    "grades" -> GradesPage(modifier)
+    "attendance" -> AttendancePage(modifier)
+    "finance" -> FinancePage(modifier)
+    "documents" -> DocumentsPage(space, modifier)
+    "procedures" -> ProceduresPage(modifier)
+    "services" -> ServicesPage(modifier)
+    "sessions" -> SessionsPage(space, modifier)
+    "surveys" -> SurveysPage(modifier)
+    "course" -> CourseOverviewPage(space, modifier, onOpen)
+    "modules" -> ModulesPage(space, modifier, onOpen)
+    "syllabus" -> SyllabusPage(space, modifier)
+    "labs" -> LabsPage(modifier, onOpen)
+    "assignments" -> AssignmentPage(modifier, onOpen)
+    "rubric" -> RubricPage(modifier)
+    "team" -> TeamPage(modifier, onOpen)
+    "quiz" -> QuizPage(modifier)
+    "simulation" -> SimulationPage(modifier)
+    "interactive" -> InteractivePage(modifier)
+    "model3d" -> Model3DPage(modifier)
+    "library" -> LibraryPage(space, modifier, onOpen)
+    "shelf" -> ShelfPage(modifier, onOpen)
+    "notes" -> NotesPage(modifier)
+    "submitResource" -> SubmitResourcePage(space, modifier, onOpen)
+    "communities" -> CommunityHubPage(space, modifier, onOpen)
+    "communityList" -> CommunitiesPage(space, modifier, onOpen)
+    "communityDetail" -> CommunityDetailPage(space, modifier, onOpen)
+    "channels" -> ChannelsPage(space, modifier)
+    "messages" -> MessagesPage(modifier)
+    "forum" -> CommunityDetailPage(space, modifier, onOpen)
+    "teacher" -> TeacherPage(modifier, onOpen)
+    "reviews" -> ReviewsPage(modifier)
+    "achievements" -> AchievementsPage(modifier)
+    "privacy" ->
+      GenericMockPage(
+        "Privacidad",
+        "Controles de visibilidad y uso de datos",
+        listOf("Quién puede ver mi perfil", "Bloqueos y denuncias", "Consentimientos"),
+        modifier,
+      )
+    "security" ->
+      GenericMockPage(
+        "Seguridad",
+        "Accesos e identidad",
+        listOf("Dispositivos", "Contraseña", "Sesiones activas"),
+        modifier,
+      )
+    "studentCard" -> StudentCardPage(space, period, modifier)
+    "membership" -> com.example.ch3mxr.feature.learning.StudentPlanPage(modifier)
+    "personalData" -> PersonalDataPage(modifier)
+    "adVideo" -> SponsoredVideoPage(modifier)
+    "jobs" ->
+      GenericMockPage(
+        "Bolsa de trabajo",
+        "Ofertas, prácticas, convenios y postulaciones",
+        listOf("Prácticas profesionales", "Convocatorias", "Mis postulaciones"),
+        modifier,
+      )
+    "support" ->
+      GenericMockPage(
+        "Soporte institucional",
+        "Tickets, incidencias y solicitudes de ayuda",
+        listOf("Nuevo ticket", "Mis solicitudes", "Centro de ayuda"),
+        modifier,
+      )
+    else ->
+      GenericMockPage(
+        "ChemXR",
+        "Pantalla de demostración",
+        listOf("Sin contenido asignado"),
+        modifier,
+      )
+  }
 }
 
 @Composable
-private fun GenericMockPage(title:String, subtitle:String,items:List<String>,modifier:Modifier=Modifier) {
-    MainPage(modifier) {
-        Eyebrow("Módulo institucional")
-        Heading(title)
-        Text(subtitle,color=MaterialTheme.colorScheme.onSurfaceVariant)
-        MockNote()
-        items.forEach { DemoNavRow(it,"Pendiente de integración con ChemXR API") {} }
-    }
+private fun GenericMockPage(
+  title: String,
+  subtitle: String,
+  items: List<String>,
+  modifier: Modifier = Modifier,
+) {
+  MainPage(modifier) {
+    Eyebrow("Módulo institucional")
+    Heading(title)
+    Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    MockNote()
+    items.forEach { DemoNavRow(it, "Pendiente de integración con ChemXR API") {} }
+  }
 }
 
 @Composable
-private fun PersonalDataPage(modifier:Modifier) {
-    val context=LocalContext.current
-    val prefs=remember {context.getSharedPreferences("chemxr_demo_profile", Context.MODE_PRIVATE)}
-    var biography by remember {mutableStateOf(prefs.getString("bio","Ciencia, tecnología y aprendizaje") ?: "")}
-    var interests by remember {mutableStateOf(prefs.getString("interests","Ciencia, tecnología, música") ?: "")}
-    var country by remember {mutableStateOf(prefs.getString("country","Perú") ?: "Perú")}
-    var department by remember {mutableStateOf(prefs.getString("department","Lima") ?: "Lima")}
-    var province by remember {mutableStateOf(prefs.getString("province","Lima") ?: "Lima")}
-    var district by remember {mutableStateOf(prefs.getString("district","Miraflores") ?: "Miraflores")}
-    var saved by remember {mutableStateOf(false)}
-    val departments=if(country=="Perú") listOf("Lima","Arequipa","Cusco") else listOf("Otra región")
-    val provinces=when(department) {
-        "Lima" -> listOf("Lima","Huaral","Cañete")
-        "Arequipa" -> listOf("Arequipa","Camaná")
-        "Cusco" -> listOf("Cusco","Urubamba")
-        else -> listOf("Otra provincia")
+private fun PersonalDataPage(modifier: Modifier) {
+  val context = LocalContext.current
+  val prefs = com.example.ch3mxr.feature.settings.LocalPreferences.current
+  var biography by remember {
+    mutableStateOf(prefs.getString("bio", "Ciencia, tecnología y aprendizaje") ?: "")
+  }
+  var interests by remember {
+    mutableStateOf(prefs.getString("interests", "Ciencia, tecnología, música") ?: "")
+  }
+  var country by remember { mutableStateOf(prefs.getString("country", "Perú") ?: "Perú") }
+  var department by remember { mutableStateOf(prefs.getString("department", "Lima") ?: "Lima") }
+  var province by remember { mutableStateOf(prefs.getString("province", "Lima") ?: "Lima") }
+  var district by remember {
+    mutableStateOf(prefs.getString("district", "Miraflores") ?: "Miraflores")
+  }
+  var saved by remember { mutableStateOf(false) }
+  val departments =
+    if (country == "Perú") listOf("Lima", "Arequipa", "Cusco") else listOf("Otra región")
+  val provinces =
+    when (department) {
+      "Lima" -> listOf("Lima", "Huaral", "Cañete")
+      "Arequipa" -> listOf("Arequipa", "Camaná")
+      "Cusco" -> listOf("Cusco", "Urubamba")
+      else -> listOf("Otra provincia")
     }
-    val districts=when(province) {
-        "Lima" -> listOf("Miraflores","Santiago de Surco","Lima")
-        "Arequipa" -> listOf("Cercado","Cayma")
-        "Cusco" -> listOf("Cusco","San Sebastián")
-        else -> listOf("Centro","Otro distrito")
+  val districts =
+    when (province) {
+      "Lima" -> listOf("Miraflores", "Santiago de Surco", "Lima")
+      "Arequipa" -> listOf("Cercado", "Cayma")
+      "Cusco" -> listOf("Cusco", "San Sebastián")
+      else -> listOf("Centro", "Otro distrito")
     }
-    MainPage(modifier) {
-        Eyebrow("Perfil · Preferencias de identidad")
-        Heading("Datos personales.")
-        GroupPanel("Presentación", "Solo demostración local; no modifica tu identidad OAuth") {
-            OutlinedTextField(biography,{biography=it;saved=false},label={Text("Biografía")},modifier=Modifier.fillMaxWidth(),minLines=2)
-            OutlinedTextField(interests,{interests=it;saved=false},label={Text("Intereses")},modifier=Modifier.fillMaxWidth())
+  MainPage(modifier) {
+    Eyebrow("Perfil · Preferencias de identidad")
+    Heading("Datos personales.")
+    GroupPanel("Presentación", "Solo demostración local; no modifica tu identidad OAuth") {
+      OutlinedTextField(
+        biography,
+        {
+          biography = it
+          saved = false
+        },
+        label = { Text("Biografía") },
+        modifier = Modifier.fillMaxWidth(),
+        minLines = 2,
+      )
+      OutlinedTextField(
+        interests,
+        {
+          interests = it
+          saved = false
+        },
+        label = { Text("Intereses") },
+        modifier = Modifier.fillMaxWidth(),
+      )
+    }
+    GroupPanel("Ubicación", "Catálogos locales de ejemplo; sustituir por app.core_* desde API") {
+      LocationChoice("País", country, listOf("Perú", "Chile", "Colombia")) {
+        country = it
+        department = if (it == "Perú") "Lima" else "Otra región"
+        province = ""
+        district = ""
+        saved = false
+      }
+      LocationChoice("Departamento / región", department, departments) {
+        department = it
+        province = ""
+        district = ""
+        saved = false
+      }
+      LocationChoice("Provincia", province, provinces) {
+        province = it
+        district = ""
+        saved = false
+      }
+      LocationChoice("Distrito", district, districts) {
+        district = it
+        saved = false
+      }
+    }
+    ChemButton(
+      "Guardar preferencias",
+      {
+        prefs.profile(
+          mapOf(
+            "bio" to biography,
+            "interests" to interests,
+            "country" to country,
+            "department" to department,
+            "province" to province,
+            "district" to district,
+          )
+        ) {
+          saved = it
         }
-        GroupPanel("Ubicación", "Catálogos locales de ejemplo; sustituir por app.core_* desde API") {
-            LocationChoice("País",country,listOf("Perú","Chile","Colombia")) {
-                country=it;department=if(it=="Perú")"Lima" else "Otra región";province="";district="";saved=false
-            }
-            LocationChoice("Departamento / región",department,departments) {
-                department=it;province="";district="";saved=false
-            }
-            LocationChoice("Provincia",province,provinces) {
-                province=it;district="";saved=false
-            }
-            LocationChoice("Distrito",district,districts) { district=it;saved=false }
-        }
-        ChemButton("Guardar preferencias",{
-            prefs.edit().putString("bio",biography).putString("interests",interests)
-                .putString("country",country).putString("department",department)
-                .putString("province",province).putString("district",district).apply()
-            saved=true
-        },Modifier.fillMaxWidth())
-        if(saved) DemoBadge("Preferencias guardadas en este teléfono")
-        MockNote()
-    }
+      },
+      Modifier.fillMaxWidth(),
+    )
+    if (saved) DemoBadge("Preferencias guardadas en este teléfono")
+    MockNote()
+  }
 }
 
 @Composable
-private fun LocationChoice(title:String,value:String,options:List<String>,onSelect:(String)->Unit) {
-    var expanded by remember {mutableStateOf(false)}
-    Box(Modifier.fillMaxWidth()) {
-        OutlinedButton(onClick={expanded=true},modifier=Modifier.fillMaxWidth(),shape=com.example.ch3mxr.core.ui.theme.ChemShapes.Component) {
-            Text("$title: ${value.ifBlank {"Elegir"}}",modifier=Modifier.weight(1f))
-            Icon(Icons.Outlined.KeyboardArrowDown,"Desplegar")
-        }
-        DropdownMenu(expanded=expanded,onDismissRequest={expanded=false}) {
-            options.forEach { option -> DropdownMenuItem(text={Text(option)},onClick={onSelect(option);expanded=false}) }
-        }
+private fun LocationChoice(
+  title: String,
+  value: String,
+  options: List<String>,
+  onSelect: (String) -> Unit,
+) {
+  var expanded by remember { mutableStateOf(false) }
+  Box(Modifier.fillMaxWidth()) {
+    OutlinedButton(
+      onClick = { expanded = true },
+      modifier = Modifier.fillMaxWidth(),
+      shape = com.example.ch3mxr.core.ui.theme.ChemShapes.Component,
+    ) {
+      Text("$title: ${value.ifBlank {"Elegir"}}", modifier = Modifier.weight(1f))
+      Icon(Icons.Outlined.KeyboardArrowDown, "Desplegar")
     }
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+      options.forEach { option ->
+        DropdownMenuItem(
+          text = { Text(option) },
+          onClick = {
+            onSelect(option)
+            expanded = false
+          },
+        )
+      }
+    }
+  }
 }
 
 @Composable
-private fun SponsoredVideoPage(modifier:Modifier=Modifier) {
-    if(com.example.ch3mxr.feature.learning.LocalLearningStore.current.isPro) return
-    MainPage(modifier) {
-        Eyebrow("Publicidad patrocinada · Maqueta")
-        Heading("Anuncio de video.")
-        GroupPanel("Reproductor a pantalla completa", "Sin archivo publicitario adjunto") {
-            Icon(Icons.Outlined.SmartDisplay, null, Modifier.fillMaxWidth().height(230.dp), tint=MaterialTheme.colorScheme.primary)
-            Text("La pantalla de destino está preparada. Cuando exista un video autorizado, el reproductor de medios podrá cargarlo desde la API/CDN.")
-        }
+private fun SponsoredVideoPage(modifier: Modifier = Modifier) {
+  if (com.example.ch3mxr.feature.learning.LocalLearning.current.isPro) return
+  MainPage(modifier) {
+    Eyebrow("Publicidad patrocinada · Maqueta")
+    Heading("Anuncio de video.")
+    GroupPanel("Reproductor a pantalla completa", "Sin archivo publicitario adjunto") {
+      Icon(
+        Icons.Outlined.SmartDisplay,
+        null,
+        Modifier.fillMaxWidth().height(230.dp),
+        tint = MaterialTheme.colorScheme.primary,
+      )
+      Text(
+        "La pantalla de destino está preparada. Cuando exista un video autorizado, el reproductor de medios podrá cargarlo desde la API/CDN."
+      )
     }
+  }
 }

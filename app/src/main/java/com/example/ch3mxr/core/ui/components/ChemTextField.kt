@@ -1,7 +1,7 @@
 package com.example.ch3mxr.core.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import com.example.ch3mxr.core.ui.theme.ChemShapes
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -22,59 +22,57 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.ch3mxr.core.model.*
 import com.example.ch3mxr.core.ui.theme.ChemDimens
-import androidx.compose.foundation.layout.height
+import com.example.ch3mxr.core.ui.theme.ChemShapes
 
 @Composable
 fun ChemTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeholder: String,
-    icon: ImageVector,
-    modifier: Modifier = Modifier,
-    isPassword: Boolean = false,
-    keyboardType: KeyboardType = KeyboardType.Text
+  value: String,
+  onValueChange: (String) -> Unit,
+  placeholder: String,
+  icon: ImageVector,
+  modifier: Modifier = Modifier,
+  isPassword: Boolean = false,
+  keyboardType: KeyboardType = KeyboardType.Text,
 ) {
-    var showPassword by rememberSaveable { mutableStateOf(false) }
+  var showPassword by rememberSaveable { mutableStateOf(false) }
 
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(ChemDimens.InputHeight),
-        singleLine = true,
-        placeholder = { Text(placeholder) },
-        leadingIcon = {
-            Icon(imageVector = icon, contentDescription = null)
-        },
-        trailingIcon = {
-            if (isPassword) {
-                IconButton(onClick = { showPassword = !showPassword }) {
-                    Icon(
-                        imageVector = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                        contentDescription = if (showPassword) "Ocultar contraseña" else "Mostrar contraseña"
-                    )
-                }
-            }
-        },
-        visualTransformation = if (isPassword && !showPassword) {
-            PasswordVisualTransformation()
-        } else {
-            VisualTransformation.None
-        },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = if (isPassword) KeyboardType.Password else keyboardType
-        ),
-        shape = ChemShapes.Component,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-            focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-            unfocusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-            focusedTrailingIconColor = MaterialTheme.colorScheme.primary,
-            unfocusedTrailingIconColor = MaterialTheme.colorScheme.primary,
-            cursorColor = MaterialTheme.colorScheme.primary
-        )
-    )
+  OutlinedTextField(
+    value = value,
+    onValueChange = onValueChange,
+    modifier = modifier.fillMaxWidth().height(ChemDimens.InputHeight),
+    singleLine = true,
+    placeholder = { Text(placeholder) },
+    leadingIcon = { Icon(imageVector = icon, contentDescription = null) },
+    trailingIcon = {
+      if (isPassword) {
+        IconButton(onClick = { showPassword = !showPassword }) {
+          Icon(
+            imageVector = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+            contentDescription = if (showPassword) "Ocultar contraseña" else "Mostrar contraseña",
+          )
+        }
+      }
+    },
+    visualTransformation =
+      if (isPassword && !showPassword) {
+        PasswordVisualTransformation()
+      } else {
+        VisualTransformation.None
+      },
+    keyboardOptions =
+      KeyboardOptions(keyboardType = if (isPassword) KeyboardType.Password else keyboardType),
+    shape = ChemShapes.Component,
+    colors =
+      OutlinedTextFieldDefaults.colors(
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+        focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+        unfocusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+        focusedTrailingIconColor = MaterialTheme.colorScheme.primary,
+        unfocusedTrailingIconColor = MaterialTheme.colorScheme.primary,
+        cursorColor = MaterialTheme.colorScheme.primary,
+      ),
+  )
 }

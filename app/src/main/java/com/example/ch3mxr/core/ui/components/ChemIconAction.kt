@@ -7,17 +7,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.ch3mxr.core.model.*
 
 /** Iconos pulsables de la app. Solo avatar usa un contenedor circular. */
 @Composable
 fun ChemIconAction(
-    icon: ImageVector,
-    contentDescription: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    tint: Color = MaterialTheme.colorScheme.onSurface
+  icon: ImageVector,
+  contentDescription: String,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  tint: Color = MaterialTheme.colorScheme.onSurface,
 ) {
-    IconButton(onClick = onClick, modifier = modifier) {
-        Icon(imageVector = icon, contentDescription = contentDescription, tint = tint)
-    }
+  IconButton(onClick = onClick, modifier = modifier) {
+    Icon(imageVector = icon, contentDescription = contentDescription, tint = tint)
+  }
 }

@@ -10,8 +10,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import com.example.ch3mxr.core.model.*
 
-enum class ThemeMode { SYSTEM, LIGHT, DARK }
+enum class ThemeMode {
+  SYSTEM,
+  LIGHT,
+  DARK,
+}
 
 // Los componentes pueden consultar si el tema real es oscuro, aunque el usuario
 // haya escogido DARK/LIGHT manualmente en vez de seguir el sistema.
@@ -19,54 +24,57 @@ val LocalChemIsDark = staticCompositionLocalOf { true }
 
 @Composable
 fun ChemXRTheme(
-    mode: ThemeMode = ThemeMode.SYSTEM,
-    accentColor: Color = ChemLime,
-    content: @Composable () -> Unit
+  mode: ThemeMode = ThemeMode.SYSTEM,
+  accentColor: Color = ChemLime,
+  content: @Composable () -> Unit,
 ) {
-    val isDark = when (mode) {
-        ThemeMode.DARK -> true
-        ThemeMode.LIGHT -> false
-        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+  val isDark =
+    when (mode) {
+      ThemeMode.DARK -> true
+      ThemeMode.LIGHT -> false
+      ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
 
-    // Contraste de texto sobre marcas institucionales oscuras (UTP rojo y Senati azul).
-    val accentText = if (accentColor.luminance() < .48f) Color.White else ChemDarkBackground
-    val scheme = if (isDark) {
-        darkColorScheme(
-            primary = accentColor,
-            onPrimary = accentText,
-            background = ChemDarkBackground,
-            onBackground = Color.White,
-            surface = ChemDarkSurface,
-            onSurface = Color.White,
-            onSurfaceVariant = ChemPalette.DarkMuted,
-            outline = ChemPalette.DarkOutline
-        )
+  // Contraste de texto sobre marcas institucionales oscuras (UTP rojo y Senati azul).
+  val accentText = if (accentColor.luminance() < .48f) Color.White else ChemDarkBackground
+  val scheme =
+    if (isDark) {
+      darkColorScheme(
+        primary = accentColor,
+        onPrimary = accentText,
+        background = ChemDarkBackground,
+        onBackground = Color.White,
+        surface = ChemDarkSurface,
+        onSurface = Color.White,
+        onSurfaceVariant = ChemPalette.DarkMuted,
+        outline = ChemPalette.DarkOutline,
+      )
     } else {
-        lightColorScheme(
-            primary = accentColor,
-            onPrimary = accentText,
-            background = ChemLightBackground,
-            onBackground = ChemDarkBackground,
-            surface = ChemLightSurface,
-            onSurface = ChemDarkBackground,
-            onSurfaceVariant = ChemPalette.LightMuted,
-            outline = ChemPalette.LightOutline
-        )
+      lightColorScheme(
+        primary = accentColor,
+        onPrimary = accentText,
+        background = ChemLightBackground,
+        onBackground = ChemDarkBackground,
+        surface = ChemLightSurface,
+        onSurface = ChemDarkBackground,
+        onSurfaceVariant = ChemPalette.LightMuted,
+        outline = ChemPalette.LightOutline,
+      )
     }
 
-    CompositionLocalProvider(LocalChemIsDark provides isDark) {
-        MaterialTheme(
-            colorScheme = scheme,
-            typography = ChemTypography,
-            shapes = Shapes(
-                extraSmall = ChemShapes.Component,
-                small = ChemShapes.Component,
-                medium = ChemShapes.Component,
-                large = ChemShapes.Component,
-                extraLarge = ChemShapes.Component
-            ),
-            content = content
-        )
-    }
+  CompositionLocalProvider(LocalChemIsDark provides isDark) {
+    MaterialTheme(
+      colorScheme = scheme,
+      typography = ChemTypography,
+      shapes =
+        Shapes(
+          extraSmall = ChemShapes.Component,
+          small = ChemShapes.Component,
+          medium = ChemShapes.Component,
+          large = ChemShapes.Component,
+          extraLarge = ChemShapes.Component,
+        ),
+      content = content,
+    )
+  }
 }

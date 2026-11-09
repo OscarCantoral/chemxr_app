@@ -16,14 +16,12 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,101 +32,104 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.ch3mxr.R
-import com.example.ch3mxr.core.ui.components.ChemTextAction
-import com.example.ch3mxr.core.ui.components.ChemButton
+import com.example.ch3mxr.core.model.*
 import com.example.ch3mxr.core.ui.components.ChemBrand
+import com.example.ch3mxr.core.ui.components.ChemButton
 import com.example.ch3mxr.core.ui.components.ChemSocialButton
+import com.example.ch3mxr.core.ui.components.ChemTextAction
 import com.example.ch3mxr.core.ui.components.ChemTextField
 import com.example.ch3mxr.core.ui.theme.ChemDimens
 
 /** Vista sin logica de autenticacion: solo emite eventos para la capa futura. */
 @Composable
 fun LoginScreen(
-    onLoginClick: (username: String, password: String, rememberMe: Boolean) -> Unit,
-    onForgotPasswordClick: () -> Unit,
-    onRegisterClick: () -> Unit,
-    onGoogleClick: () -> Unit,
-    onFacebookClick: () -> Unit
+  onLoginClick: (username: String, password: String, rememberMe: Boolean) -> Unit,
+  onForgotPasswordClick: () -> Unit,
+  onRegisterClick: () -> Unit,
+  onGoogleClick: () -> Unit,
+  onFacebookClick: () -> Unit,
 ) {
-    var username by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var rememberMe by rememberSaveable { mutableStateOf(false) }
+  var username by rememberSaveable { mutableStateOf("") }
+  var password by rememberSaveable { mutableStateOf("") }
+  var rememberMe by rememberSaveable { mutableStateOf(false) }
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding()
-            .navigationBarsPadding()
+  BoxWithConstraints(
+    modifier =
+      Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .statusBarsPadding()
+        .navigationBarsPadding()
+  ) {
+    // Menos espacios en telefonos pequenos; scroll real si aun no cabe.
+    val compact = maxHeight < 700.dp
+    val verticalGap = if (compact) 8.dp else 15.dp
+    val logoSize = ChemDimens.LogoSize * (if (compact) 0.73f else 1f)
+
+    Column(
+      modifier =
+        Modifier.fillMaxSize()
+          .verticalScroll(rememberScrollState())
+          .padding(
+            horizontal = ChemDimens.ScreenHorizontalPadding,
+            vertical = if (compact) 8.dp else 20.dp,
+          ),
+      horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // Menos espacios en telefonos pequenos; scroll real si aun no cabe.
-        val compact = maxHeight < 700.dp
-        val verticalGap = if (compact) 8.dp else 15.dp
-        val logoSize = ChemDimens.LogoSize * (if (compact) 0.73f else 1f)
+      ChemBrand(logoSize = logoSize)
+      Spacer(Modifier.height(if (compact) 8.dp else 20.dp))
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(
-                    horizontal = ChemDimens.ScreenHorizontalPadding,
-                    vertical = if (compact) 8.dp else 20.dp
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ChemBrand(logoSize = logoSize)
-            Spacer(Modifier.height(if (compact) 8.dp else 20.dp))
+      ChemTextField(
+        value = username,
+        onValueChange = { username = it },
+        placeholder = "Usuario",
+        icon = Icons.Filled.Person,
+        keyboardType = KeyboardType.Email,
+      )
+      Spacer(Modifier.height(5.dp))
+      ChemTextField(
+        value = password,
+        onValueChange = { password = it },
+        placeholder = "Contraseña",
+        icon = Icons.Filled.Lock,
+        isPassword = true,
+      )
 
-            ChemTextField(
-                value = username,
-                onValueChange = { username = it },
-                placeholder = "Usuario",
-                icon = Icons.Filled.Person,
-                keyboardType = KeyboardType.Email
-            )
-            Spacer(Modifier.height(5.dp))
-            ChemTextField(
-                value = password,
-                onValueChange = { password = it },
-                placeholder = "Contraseña",
-                icon = Icons.Filled.Lock,
-                isPassword = true
-            )
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                ChemTextAction(text = "¿Olvidaste tu contraseña?", onClick = onForgotPasswordClick)
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = rememberMe,
-                    onCheckedChange = { rememberMe = it },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = MaterialTheme.colorScheme.primary,
-                        checkmarkColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                )
-                Text(
-                    text = "Recordarme",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.clickable { rememberMe = !rememberMe }
-                )
-            }
-            Spacer(Modifier.height(verticalGap))
-            ChemButton(
-                text = "INICIAR SESIÓN",
-                onClick = { onLoginClick(username.trim(), password, rememberMe) },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(Modifier.height(verticalGap))
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ChemSocialButton(label = "Google", iconRes = R.drawable.ic_google, onClick = onGoogleClick)
-                ChemSocialButton(label = "Facebook", iconRes = R.drawable.ic_facebook, onClick = onFacebookClick)
-            }
-            Spacer(Modifier.height(12.dp))
-            ChemTextAction(text = "¿No tienes cuenta? Regístrate", onClick = onRegisterClick)
-        }
+      Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        ChemTextAction(text = "¿Olvidaste tu contraseña?", onClick = onForgotPasswordClick)
+      }
+      Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(
+          checked = rememberMe,
+          onCheckedChange = { rememberMe = it },
+          colors =
+            CheckboxDefaults.colors(
+              checkedColor = MaterialTheme.colorScheme.primary,
+              checkmarkColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+        )
+        Text(
+          text = "Recordarme",
+          color = MaterialTheme.colorScheme.onBackground,
+          modifier = Modifier.clickable { rememberMe = !rememberMe },
+        )
+      }
+      Spacer(Modifier.height(verticalGap))
+      ChemButton(
+        text = "INICIAR SESIÓN",
+        onClick = { onLoginClick(username.trim(), password, rememberMe) },
+        modifier = Modifier.fillMaxWidth(),
+      )
+      Spacer(Modifier.height(verticalGap))
+      Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        ChemSocialButton(label = "Google", iconRes = R.drawable.ic_google, onClick = onGoogleClick)
+        ChemSocialButton(
+          label = "Facebook",
+          iconRes = R.drawable.ic_facebook,
+          onClick = onFacebookClick,
+        )
+      }
+      Spacer(Modifier.height(12.dp))
+      ChemTextAction(text = "¿No tienes cuenta? Regístrate", onClick = onRegisterClick)
     }
+  }
 }

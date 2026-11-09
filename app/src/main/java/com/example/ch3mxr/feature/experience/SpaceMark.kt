@@ -13,26 +13,31 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.ch3mxr.core.model.*
 import com.example.ch3mxr.core.ui.theme.LocalChemIsDark
 import com.example.ch3mxr.feature.profile.model.StudySpace
 
 /** Usa el logo institucional verdadero sin imponerle tintes ni fondos adicionales. */
 @Composable
 fun SpaceMark(space: StudySpace, size: Dp = 30.dp) {
-    val logo = if (LocalChemIsDark.current) space.iconDark else space.iconLight
-    if (logo != null) {
-        Image(
-            painter = painterResource(logo),
-            contentDescription = "Logo de ${space.name}",
-            modifier = Modifier.size(size),
-            contentScale = ContentScale.Fit
-        )
-    } else {
-        Box(
-            Modifier.size(size).background(MaterialTheme.colorScheme.primary.copy(alpha = .15f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("CX", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
-        }
+  val logo = if (LocalChemIsDark.current) space.iconDark else space.iconLight
+  if (logo != null) {
+    Image(
+      painter = painterResource(logo),
+      contentDescription = "Logo de ${space.name}",
+      modifier = Modifier.size(size),
+      contentScale = ContentScale.Fit,
+    )
+  } else {
+    Box(
+      Modifier.size(size).background(MaterialTheme.colorScheme.primary.copy(alpha = .15f)),
+      contentAlignment = Alignment.Center,
+    ) {
+      Text(
+        "CX",
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.primary,
+      )
     }
+  }
 }
